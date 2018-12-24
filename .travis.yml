@@ -1,0 +1,32 @@
+sudo: enabled
+dist: xenial
+language: python 
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+  firefox: latest
+env:
+  global:
+    - MOZ_HEADLESS=1
+    - PGPORT=5432
+    - DATABASE_URL=postgres://postgres:@localhost:5432/postgres
+python: 
+  - "3.5"
+  - "3.6"
+
+# Comando para instalar dependencias
+before_install:
+  - pip install --upgrade pip 
+install:
+  - pip install -r requirements.txt
+script:
+  - ./test.sh
+notifications:
+  email:
+    - danielrs9705@gmail.com
+branches:
+  only:
+    - master
