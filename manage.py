@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+    Es el archivo principal del proyecto
+"""
 import os
 import sys
 
