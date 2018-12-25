@@ -1,32 +1,38 @@
 sudo: enabled
 dist: xenial
-language: python 
+language: python
 addons:
-  postgresql: "10"
+  postgresql: '10'
   apt:
     packages:
-      - postgresql-10
-      - postgresql-client-10
+    - postgresql-10
+    - postgresql-client-10
   firefox: latest
 env:
   global:
-    - MOZ_HEADLESS=1
-    - PGPORT=5432
-    - DATABASE_URL=postgres://postgres:@localhost:5432/postgres
-python: 
-  - "3.5"
-  - "3.6"
-
-# Comando para instalar dependencias
+  - MOZ_HEADLESS=1
+  - PGPORT=5432
+  - DATABASE_URL=postgres://postgres:@localhost:5432/postgres
+python:
+- '3.5'
+- '3.6'
 before_install:
-  - pip install --upgrade pip 
+- pip install --upgrade pip
 install:
-  - pip install -r requirements.txt
+- pip install -r requirements.txt
 script:
-  - ./test.sh
+- "./test.sh"
 notifications:
   email:
-    - danielrs9705@gmail.com
+  - danielrs9705@gmail.com
 branches:
   only:
-    - master
+  - master
+deploy:
+  provider: heroku
+  api_key:
+    secure: zkYMRQ85ZqlsLo4ZiiOXHNJcazO7zy6LO2epYePod7hT7BPY37oUBiNzmAhWcwQLYHPUOors6TjrHac/pWMM5NX9uVYmd0/f29WuFQ3JJmTYmjiTowsP7a0tOK+3VmIQRCwcGXyFaEnd+pmZtDfK06L0BSuJ26uI49YK8O6kSMU27d9Il98mbIsijW+tImzu2mbGkw2IxAThbdyhj71erDaZ2EG6fO2nA8Tf/A7GFUOeEVodQi+KHNq7Bi0Wx94jZZSUELu0424K6qJnTRgoIGucFenJIDmoo4tl9gqETO40S7iElm7TsB7d5PWsqzTyt2SV0TQzz0FHO3uHWVOUokdriwYsUIwATT0LhqSEGyQki/Hz1QiWuCCEyY39MvXASYtnrhrlDRpkrqrX0UrPek4u+9MrpV9IP42DW2KoTrqnprrwWDTahjJL3tVE5qOJ343SiQBKKtO6RfjxKtybn8rcNl6uo28twE1UIR95zrZuNIO4H8yAO6SDp9QA06K8c2My7ghK7NID+p7kyKS2MczYVU4QS6lU+1aSm9Nu69egMOUwdjT9B/YgiKBkjG8wV/26ZGFPc0jhZR4v5CjovAtZGlbQ82iqSiY6fd0ARnFUBI3M5ZVckMCBjQ8OsaXuCnJZ6E3LKiC9t96d+8pvUN1PM2X0PVbhx92Xz/HTDEs=
+  app: crucitafashion
+  on:
+    repo: danielrs975/sistema_crucita_fashion
+    python: '3.6'
