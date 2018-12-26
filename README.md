@@ -66,12 +66,19 @@ Workflow (Flujo de trabajo)
 
 ### Creación de las ramas
   Como fue explicado anteriormente, por cada sprint habrá una rama que lo represente. Para cada uno de los participantes del Sprint actual seguirá las siguientes instrucciones para la creación de una rama.
-  1. Cada participante creará una rama con el siguiente nombre *sprintN/(usuario-git)/(nombre-corto-de-la-tarea-asignada)*  siendo N el número del sprint actual. Con el siguiente comando se puede crear la rama
+  1. Antes de comenzar a trabajar se tiene que ejecutar los siguientes comandos. Para actualizar el repositorio local 
+  ```
+  git fetch
+  ```
+  ```
+  git pull
+  ```
+  2. Cada participante creará una rama con el siguiente nombre *sprintN/(usuario-git)/(nombre-corto-de-la-tarea-asignada)*  siendo N el número del sprint actual. Con el siguiente comando se puede crear la rama
   ```shell
   git checkout -b sprintN/(usuario-git)/(nombre-corto-de-la-tarea-asignada)
   ```
-  2. El desarrollador realizará toda su tarea en esa rama y las pruebas unitarias también se colocarán en su aqui.
-  3. Si se quiere ver los tickets que lanza django en caso de error cambie el valor de DEBUG de False a True. Pero antes de pushear el cambio asegurese que esta variable vuelva a estar en False. Esta variable se encuentra en settings.py en la carpeta *crucita_fashion/*
+  3. El desarrollador realizará toda su tarea en esa rama y las pruebas unitarias también se colocarán en su aqui.
+  4. Si se quiere ver los tickets que lanza django en caso de error cambie el valor de DEBUG de False a True. Pero antes de pushear el cambio asegurese que esta variable vuelva a estar en False. Esta variable se encuentra en settings.py en la carpeta *crucita_fashion/*
   
 ### Merge de las ramas
   Luego de terminada una tarea por un participante del proyecto esta será revisada por el jefe del proyecto para realizar merge con la rama del Sprint. Por último cuando se termine el Sprint se procederá a realizar un pull requests para realizar la integración con la rama master y luego el deployment para que el cliente pueda empezar a usar inmediatamente las nuevas funcionalidades. **IMPORTANTE:** NO HACER PUSH DIRECTAMENTE EN MASTER.
