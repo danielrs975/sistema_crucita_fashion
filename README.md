@@ -2,7 +2,7 @@ Sistema Crucita Fashion Boutique
 ================================
 [![Build Status](https://travis-ci.com/danielrs975/sistema_crucita_fashion.svg?branch=master)](https://travis-ci.com/danielrs975/sistema_crucita_fashion)
 
-  Este proyecto consiste en el desarrollo de una aplicación web para la administración de un local de ventas, esto incluye un control sobre el inventario, ventas y reservas que se realicen. También se le proveera de servicios a los usuarios de la app como por ejemplo poder realizar compras, ver catálogos de inventario recien añadido, etc. 
+  Este proyecto consiste en el desarrollo de una aplicación web para la administración de un local de ventas, esto incluye un control sobre el inventario, ventas y reservas que se realicen. También se le proveera de servicios a los usuarios de la app como por ejemplo poder realizar compras, ver catálogos de inventario recien añadido, etc. Para mayor información vea el siguinte archivo https://docs.google.com/document/d/1fP2F8wYau6VhY54gA0icHZzOzI1K_u4ydvt7FU7UIYw/edit?usp=sharing
 
 Herramientas de desarrollo a utilizar
 -------------------------------------
