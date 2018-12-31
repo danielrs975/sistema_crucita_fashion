@@ -19,9 +19,9 @@ python:
 before_install:
 - pip install --upgrade pip
 install:
-- pip install -r api/requirements.txt
+- pip install -r ./api/requirements.txt
 script:
-- "./test.sh"
+- "./api/test.sh"
 notifications:
   email:
   - danielrs9705@gmail.com
