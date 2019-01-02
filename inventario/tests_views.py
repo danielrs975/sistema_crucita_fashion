@@ -4,9 +4,7 @@ con las vistas del modulo inventario
 '''
 from django.urls import reverse_lazy
 from rest_framework import status
-from rest_framework.renderers import JSONRenderer
 from rest_framework.test import APITestCase
-from inventario.views import ProductoCrearView
 from inventario.models import Producto, Categoria
 from inventario.serializers import ProductoSerializer
 
@@ -18,7 +16,7 @@ class ProductoCrearViewTests(APITestCase):
     '''
     def setUp(self):
         '''
-        Inicializa las variables necesarias para 
+        Inicializa las variables necesarias para
         realizar las pruebas
         '''
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
@@ -65,15 +63,15 @@ class ProductoDetallesViewTest(APITestCase):
     '''
     def setUp(self):
         '''
-        Inicializa la base de datos con algunos 
+        Inicializa la base de datos con algunos
         productos para realizar las pruebas
         '''
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
             Categoria.objects.create(nombre=categoria)
-        
+
         Producto.objects.create(
             codigo="2",
-            cantidad=1,
+            cantidad=4,
             costo=1,
             categoria=Categoria.objects.get(nombre="Ropa"),
             talla="M"
@@ -84,7 +82,7 @@ class ProductoDetallesViewTest(APITestCase):
             costo=3,
             categoria=Categoria.objects.get(nombre="Accesorio")
         )
-    
+
     def test_mostrar_detalles_de_un_producto(self):
         '''
         Prueba que muestra los detalles de un producto
@@ -96,13 +94,13 @@ class ProductoDetallesViewTest(APITestCase):
 
     def test_mostrar_detalles_de_un_producto_que_no_existe(self):
         '''
-        Prueba que si un producto no existe 
+        Prueba que si un producto no existe
         arroja un error 404 Not Found
         '''
         url = reverse_lazy('inventario:editar', args=(5,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, msg=response.data)
-    
+
     def test_actualizar_detalles_de_un_producto(self):
         '''
         Prueba que actualiza bien los detalles de un producto
@@ -119,7 +117,8 @@ class ProductoDetallesViewTest(APITestCase):
         response = self.client.put(url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
         producto_editado = Producto.objects.get(codigo="2")
-        self.assertEqual(producto_editado.costo, data['costo'], msg="No se actualizo correctamente le producto")
+        self.assertEqual(producto_editado.costo, data['costo'],
+                         msg="No se actualizo correctamente le producto")
 
     def test_eliminar_producto_que_existe(self):
         '''
@@ -131,11 +130,12 @@ class ProductoDetallesViewTest(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, msg=response.data)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, msg="No se elimino correctamente el producto")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND,
+                         msg="No se elimino correctamente el producto")
 
     def test_eliminar_producto_que_no_existe(self):
         '''
-        Prueba que muestra un error si el 
+        Prueba que muestra un error si el
         producto a eliminar no existe
         '''
         url = reverse_lazy('inventario:editar', args=(8,))
@@ -154,10 +154,10 @@ class ProductoBuscarViewTest(APITestCase):
         '''
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
             Categoria.objects.create(nombre=categoria)
-        
+
         Producto.objects.create(
             codigo="2",
-            cantidad=1,
+            cantidad=2,
             costo=1,
             categoria=Categoria.objects.get(nombre="Ropa"),
             talla="M"
@@ -169,10 +169,10 @@ class ProductoBuscarViewTest(APITestCase):
             categoria=Categoria.objects.get(nombre="Accesorio")
         )
         self.mensaje_query = "La query hecha por .filter y por el request no son iguales"
-    
+
     def test_busqueda_con_codigo_valido(self):
         '''
-        Prueba que contiene un busqueda por codigo 
+        Prueba que contiene un busqueda por codigo
         en la base de datos
         '''
         url = reverse_lazy("inventario:buscar")
@@ -186,7 +186,7 @@ class ProductoBuscarViewTest(APITestCase):
 
     def test_busqueda_con_categoria_valida(self):
         '''
-        Prueba que la busqueda con una categoria 
+        Prueba que la busqueda con una categoria
         valida retorna una lista de los productos
         en esa categoria
         '''
@@ -195,7 +195,8 @@ class ProductoBuscarViewTest(APITestCase):
         url = url + "?categoria=" + str(categoria.pk)
         response = self.client.get(url)
         resultado_esperado = [
-            ProductoSerializer(producto).data for producto in Producto.objects.filter(categoria=categoria)
+            ProductoSerializer(producto).data
+            for producto in Producto.objects.filter(categoria=categoria)
         ]
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
         self.assertEqual(response.data, resultado_esperado, msg=self.mensaje_query)
@@ -209,14 +210,15 @@ class ProductoBuscarViewTest(APITestCase):
         url = url + "?categoria=" + str(categoria.pk) + "&talla=M"
         response = self.client.get(url)
         resultado_esperado = [
-            ProductoSerializer(producto).data for producto in Producto.objects.filter(categoria=categoria, talla="M")
+            ProductoSerializer(producto).data
+            for producto in Producto.objects.filter(categoria=categoria, talla="M")
         ]
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
         self.assertEqual(response.data, resultado_esperado, msg=self.mensaje_query)
 
     def test_busqueda_con_campo_invalido(self):
         '''
-        Prueba realizar una busqueda con uno 
+        Prueba realizar una busqueda con uno
         de los atributos invalido
         '''
         url = reverse_lazy("inventario:buscar")

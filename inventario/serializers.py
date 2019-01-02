@@ -20,7 +20,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     dentro del inventario
     '''
 
-    def validate(self, data):
+    def validate(self, data): #pylint: disable=arguments-differ
         '''
         Metodo que valida la talla de un Producto
         dependiendo si es una Ropa o un Zapato
@@ -41,7 +41,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         else:
             if talla is not None:
                 raise serializers.ValidationError("No aplica el campo talla para este producto")
-        
+
         return data
 
     def validate_costo(self, costo): # pylint: disable=no-self-use
@@ -55,7 +55,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 
         if costo <= 0:
             raise serializers.ValidationError("El costo no puede ser negativo")
-        
+
         return costo
 
     class Meta:
