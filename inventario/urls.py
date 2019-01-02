@@ -9,9 +9,9 @@ from inventario import views
 app_name = "inventario"
 
 urlpatterns = [
-    path('productos/', views.ProductoBuscarView.as_view()),
-    path('productos/<int:pk>', views.ProductoDetallesView.as_view()),
-    path('productos/crear', views.ProductoCrearView.as_view()),
+    path('productos/', views.ProductoBuscarView.as_view(), name='buscar'),
+    path('productos/<int:pk>', views.ProductoDetallesView.as_view(), name='editar'),
+    path('productos/crear', views.ProductoCrearView.as_view(), name='crear'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
