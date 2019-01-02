@@ -3,7 +3,7 @@ Script que contendra las pruebas
 para este modulo
 '''
 from django.test import TestCase # pylint: disable=unused-import
-from .serializers import ProductoSerializer, CategoriaSerializer
+from .serializers import ProductoSerializer
 from .models import Producto, Categoria
 
 # Create your tests here.
@@ -21,8 +21,8 @@ class ProductoSerializerTest(TestCase):
             Categoria.objects.create(nombre=categoria)
 
         self.producto_1 = Producto(
-            codigo = "1",
-            cantidad= 1,
+            codigo="1",
+            cantidad=1,
             costo=1,
             categoria=Categoria.objects.get(nombre="Ropa"),
             talla="M"

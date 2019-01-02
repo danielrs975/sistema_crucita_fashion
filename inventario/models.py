@@ -38,7 +38,7 @@ TALLA_ZAPATOS = [
 
 class Categoria(models.Model):
     '''
-    Creacion de la tabla categoria que 
+    Creacion de la tabla categoria que
     dividira los productos en distintos tipos
     '''
     nombre = models.CharField(unique=True, max_length=100)
