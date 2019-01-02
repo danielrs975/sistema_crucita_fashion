@@ -4,6 +4,7 @@ modulo
 '''
 from django.shortcuts import render # pylint: disable=unused-import
 from django.http import Http404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from inventario.models import Producto
 from inventario.serializers import ProductoSerializer
@@ -32,3 +33,5 @@ class ProductoBuscarView(generics.ListAPIView):
     '''
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('codigo', 'cantidad', 'costo', 'categoria')
