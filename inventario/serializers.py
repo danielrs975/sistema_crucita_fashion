@@ -5,6 +5,15 @@ modulo
 from rest_framework import serializers
 from .models import Producto, Categoria, TALLA_ROPA, TALLA_ZAPATOS
 
+class CategoriaSerializer(serializers.ModelSerializer):
+    '''
+    Clase que representa el serializer de las categorias
+    en la cuales esta contenida cada unos de los productos
+    '''
+    class Meta:
+        model = Categoria
+        fields = "__all__"
+
 class ProductoSerializer(serializers.ModelSerializer):
     '''
     Clase que representa el serializer de los productos
