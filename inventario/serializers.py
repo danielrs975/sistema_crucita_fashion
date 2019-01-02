@@ -19,31 +19,30 @@ class ProductoSerializer(serializers.ModelSerializer):
     Clase que representa el serializer de los productos
     dentro del inventario
     '''
-    def is_valid(self): # pylint: disable=arguments-differ
+
+    def validate(self, data):
         '''
-        Se sobreescribe el metodo is_valid para poder
-        escribir la validacion de la talla en caso de que
-        sea de zapatos o de ropa
+        Metodo que valida la talla de un Producto
+        dependiendo si es una Ropa o un Zapato
         '''
-        producto_valido = super().is_valid()
-        categoria = Categoria.objects.get(pk=self.data['categoria'])
+        categoria = data['categoria']
         talla = None
 
-        # Area de verificacion de la talla
-        if 'talla' in self.data.keys():
-            talla = self.data['talla']
+        if 'talla' in data.keys():
+            talla = data['talla']
 
+        # Area de verificacion de la talla
         if categoria.nombre == "Ropa":
             if not talla in TALLA_ROPA:
-                return False
+                raise serializers.ValidationError("La talla introducida no es valida para la ropa")
         elif categoria.nombre == "Zapato":
             if not talla in TALLA_ZAPATOS:
-                return False
+                raise serializers.ValidationError("La talla introducida no es valida para zapatos")
         else:
             if talla is not None:
-                return False
-
-        return producto_valido
+                raise serializers.ValidationError("No aplica el campo talla para este producto")
+        
+        return data
 
     def validate_costo(self, costo): # pylint: disable=no-self-use
         '''
