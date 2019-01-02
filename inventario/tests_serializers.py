@@ -20,6 +20,29 @@ class ProductoSerializerTest(TestCase):
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
             Categoria.objects.create(nombre=categoria)
 
+        self.producto_1 = Producto(
+            codigo = "1",
+            cantidad= 1,
+            costo=1,
+            categoria=Categoria.objects.get(nombre="Ropa"),
+            talla="M"
+        )
+
+    def test_producto_serializer(self):
+        '''
+        Prueba que el serializer este contruyendo la informacion
+        bien
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': 1,
+            'categoria': (Categoria.objects.get(nombre="Ropa")).pk,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(self.producto_1)
+        self.assertEqual(producto_serializer.data, producto, msg="Los dos productos no son iguales")
+
     def test_is_valid_talla_ropa_none(self):
         '''
         Metodo que prueba el is_valid del serializer
