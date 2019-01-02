@@ -55,6 +55,8 @@ class ProductoSerializer(serializers.ModelSerializer):
 
         if costo <= 0:
             raise serializers.ValidationError("El costo no puede ser negativo")
+        
+        return costo
 
     class Meta:
         model = Producto
