@@ -27,7 +27,6 @@ class ProductoSerializerTest(TestCase):
             categoria=Categoria.objects.get(nombre="Ropa"),
             talla="M"
         )
-
         self.categoria_ropa = (Categoria.objects.get(nombre="Ropa")).pk
         self.categoria_zapato = (Categoria.objects.get(nombre="Zapato")).pk
         self.categoria_accesorio = (Categoria.objects.get(nombre="Accesorio")).pk
@@ -46,6 +45,111 @@ class ProductoSerializerTest(TestCase):
         }
         producto_serializer = ProductoSerializer(self.producto_1)
         self.assertEqual(producto_serializer.data, producto, msg="Los dos productos no son iguales")
+
+    def test_is_valid_codigo_es_char(self):
+        '''
+        Prueba de que el atributo codigo tiene que ser
+        un string
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': 1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_cantidad_negativo(self):
+        '''
+        Prueba con el atributo cantidad negativo.
+        Deberia dar False
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': -1,
+            'costo': 1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_cantidad_otro_tipo_dato(self):
+        '''
+        Prueba con el atributo cantidad con otro tipo de
+        dato. Deberia de dar False
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': "ansjanoasnoif",
+            'costo': 1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_cantidad_positiva(self):
+        '''
+        Prueba con el atributo cantidad con un entero
+        positivo. Deberia dar True
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': 1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_costo_otro_tipo_dato(self):
+        '''
+        Prueba con el atributo costo con otro tipo
+        de dato que no es numerico. Deberia dar False
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': "asnoisanfoina",
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_costo_numero_negativo(self):
+        '''
+        Prueba con el atributo costo con un numero negativo
+        . Deberia dar False
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': -1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
+
+    def test_is_valid_costo_numero_positivo(self):
+        '''
+        Prueba con el atributo costo con un numero positivo,
+        Deberia dar True
+        '''
+        producto = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': 1,
+            'categoria': self.categoria_ropa,
+            'talla': "M"
+        }
+        producto_serializer = ProductoSerializer(data=producto)
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_talla_ropa_none(self):
         '''
