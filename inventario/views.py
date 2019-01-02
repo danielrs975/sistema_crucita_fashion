@@ -14,13 +14,15 @@ class ProductoCrearView(generics.CreateAPIView):
     Vista que se encarga de la creacion de un
     nuevo producto para anadir al sistema
     '''
+    queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
-
+    
 class ProductoDetallesView(generics.RetrieveUpdateDestroyAPIView):
     '''
     Vista que permite modificar, ver o eliminar
     la informacion de un producto dentro del sistema
     '''
+    queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
 
 class ProductoBuscarView(generics.ListAPIView):
