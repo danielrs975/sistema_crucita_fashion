@@ -3,7 +3,7 @@ Script que contendra las pruebas
 para este modulo
 '''
 from django.test import TestCase # pylint: disable=unused-import
-from .serializers import ProductoSerializer
+from .serializers import ProductoSerializer, CategoriaSerializer
 from .models import Producto, Categoria
 
 # Create your tests here.
@@ -28,6 +28,10 @@ class ProductoSerializerTest(TestCase):
             talla="M"
         )
 
+        self.categoria_ropa = (Categoria.objects.get(nombre="Ropa")).pk
+        self.categoria_zapato = (Categoria.objects.get(nombre="Zapato")).pk
+        self.categoria_accesorio = (Categoria.objects.get(nombre="Accesorio")).pk
+
     def test_producto_serializer(self):
         '''
         Prueba que el serializer este contruyendo la informacion
@@ -37,7 +41,7 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Ropa")).pk,
+            'categoria': self.categoria_ropa,
             'talla': "M"
         }
         producto_serializer = ProductoSerializer(self.producto_1)
@@ -52,10 +56,10 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Ropa")).pk
+            'categoria': self.categoria_ropa
         }
         producto_serializer = ProductoSerializer(data=producto_ropa)
-        self.assertFalse(producto_serializer.is_valid())
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_ropa_talla_invalida(self):
         '''
@@ -66,11 +70,11 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Ropa")).pk,
+            'categoria': self.categoria_ropa,
             'talla': "nsaoinfiasonf"
         }
         producto_serializer = ProductoSerializer(data=producto_ropa)
-        self.assertFalse(producto_serializer.is_valid())
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_ropa_talla_valida(self):
         '''
@@ -81,11 +85,11 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Ropa")).pk,
+            'categoria': self.categoria_ropa,
             'talla': "XS"
         }
         producto_serializer = ProductoSerializer(data=producto_ropa)
-        self.assertTrue(producto_serializer.is_valid())
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_zapato_talla_none(self):
         '''
@@ -96,10 +100,10 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Ropa")).pk
+            'categoria': self.categoria_ropa
         }
         producto_serializer = ProductoSerializer(data=producto_zapato)
-        self.assertFalse(producto_serializer.is_valid())
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_zapato_talla_negativa(self):
         '''
@@ -109,11 +113,11 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Zapato")).pk,
+            'categoria': self.categoria_zapato,
             'talla': -1,
         }
         producto_serializer = ProductoSerializer(data=producto_zapato)
-        self.assertFalse(producto_serializer.is_valid())
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_zapato_talla_valida(self):
         '''
@@ -124,11 +128,11 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Zapato")).pk,
+            'categoria': self.categoria_zapato,
             'talla': 6,
         }
         producto_serializer = ProductoSerializer(data=producto_zapato)
-        self.assertTrue(producto_serializer.is_valid())
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_producto_con_talla(self):
         '''
@@ -140,11 +144,11 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Accesorio")).pk,
+            'categoria': self.categoria_accesorio,
             'talla': "3",
         }
         producto_serializer = ProductoSerializer(data=producto)
-        self.assertFalse(producto_serializer.is_valid())
+        self.assertFalse(producto_serializer.is_valid(), msg=producto_serializer.errors)
 
     def test_is_valid_producto_sin_talla(self):
         '''
@@ -156,8 +160,8 @@ class ProductoSerializerTest(TestCase):
             'codigo': "1",
             'cantidad': 1,
             'costo': 1,
-            'categoria': (Categoria.objects.get(nombre="Accesorio")).pk
+            'categoria': self.categoria_accesorio
         }
         producto_serializer = ProductoSerializer(data=producto)
-        self.assertTrue(producto_serializer.is_valid())
+        self.assertTrue(producto_serializer.is_valid(), msg=producto_serializer.errors)
     
