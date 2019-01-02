@@ -26,9 +26,15 @@ class ProductoSerializer(serializers.ModelSerializer):
         sea de zapatos o de ropa
         '''
         producto_valido = super().is_valid()
+        costo = self.data['costo']
         categoria = Categoria.objects.get(pk=self.data['categoria'])
         talla = None
 
+        # Area de verificacion del costo
+        if type(costo) != str and costo <= 0:
+            return False
+
+        # Area de verificacion de la talla
         if 'talla' in self.data.keys():
             talla = self.data['talla']
 
