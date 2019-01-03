@@ -9,7 +9,7 @@ from usuarios.models import Usuario, Group
 
 class UsuarioCrearViewSuperUsuarioTest(APITestCase):
     """
-    Clase que contiene las pruebas de 
+    Clase que contiene las pruebas de
     la vista crear usuario
     """
     def setUp(self):
@@ -19,7 +19,7 @@ class UsuarioCrearViewSuperUsuarioTest(APITestCase):
         """
         for grupo in ['SuperUsuario', 'Administrador', 'Vendedor', 'Cliente']:
             Group.objects.create(name=grupo)
-        
+
         Usuario.objects.create(
             first_name="Daniel",
             last_name="Rodriguez",
@@ -97,7 +97,7 @@ class UsuarioCrearViewSuperUsuarioTest(APITestCase):
 
 class UsuarioRegistroViewTest(APITestCase):
     """
-    This class contains the tests for the 
+    This class contains the tests for the
     UsuarioCrearView for no authenticated users
 
     Esta clase contiene las pruebas para la vista
@@ -131,11 +131,11 @@ class UsuarioRegistroViewTest(APITestCase):
             "password"  : "jaja123"
         }
         self.url = reverse_lazy("usuarios:registro")
-    
+
     def test_vista_con_usuario_autenticado(self):
         """
         Test that if a user is authenticated and
-        try to access the view, it is gonna be 
+        try to access the view, it is gonna be
         rejected
 
         Prueba que si un usuario esta autenticado

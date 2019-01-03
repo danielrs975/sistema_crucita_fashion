@@ -7,7 +7,7 @@ from rest_framework import permissions
 class EsSuperUsuarioOAdministrador(permissions.BasePermission):
     """
     Permiso que solo permite a los superusuarios
-    usar las vistas en las cuales esta esta 
+    usar las vistas en las cuales esta esta
     restriccion
     """
 
@@ -20,7 +20,7 @@ class EsSuperUsuarioOAdministrador(permissions.BasePermission):
         usuario = request.user
         grupo = usuario.grupo
         return grupo.name in ["SuperUsuario", "Administrador"]
-    
+
 class IsNotAuthenticated(permissions.BasePermission):
     """
     This implement the following permission:
