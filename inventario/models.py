@@ -53,4 +53,4 @@ class Producto(models.Model):
     costo = models.FloatField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     talla = models.CharField(null=True, max_length=100)
-    foto = models.ImageField(null=True)
+    foto = models.ImageField(null=True, upload_to='coleccion/')
