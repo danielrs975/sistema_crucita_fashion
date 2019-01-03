@@ -112,3 +112,15 @@ class UsuarioSerializerTest(TestCase):
         usuario_serializer = UsuarioSerializer(data=data)
         self.assertFalse(usuario_serializer.is_valid(),
                          msg="Agrego perfectamente a pesar de que existe un usuario registrado con ese email")
+
+    def test_grupo_inexistente(self):
+        """
+        Metodo que se encarga de la prueba que
+        verifica que el grupo introducido es valido
+        dado un grupo que no existe
+        """
+        data = self.usuario_data
+        data['grupo'] = -1
+        usuario_serializer = UsuarioSerializer(data=data)
+        self.assertFalse(usuario_serializer.is_valid(),
+                         msg="Agrego con exito a pesar de que el grupo no existe")
