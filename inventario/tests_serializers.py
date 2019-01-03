@@ -41,7 +41,8 @@ class ProductoSerializerTest(TestCase):
             'cantidad': 1,
             'costo': 1,
             'categoria': self.categoria_ropa,
-            'talla': "M"
+            'talla': "M",
+            'foto': None
         }
         producto_serializer = ProductoSerializer(self.producto_1)
         self.assertEqual(producto_serializer.data, producto, msg="Los dos productos no son iguales")
