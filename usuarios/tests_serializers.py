@@ -26,6 +26,7 @@ class UsuarioSerializerTest(TestCase):
             email="danielrs9705@gmail.com",
             username="danielrs",
             grupo=Group.objects.get(name="SuperUsuario"),
+            password="123jaja"
         )
         self.usuario_data = {
             "first_name": "Rafael",
