@@ -1,5 +1,5 @@
 """
-Script que contiene las pruebas 
+Script que contiene las pruebas
 relacionadas con los serializers de esta
 aplicacion
 """
@@ -39,7 +39,7 @@ class UsuarioSerializerTest(TestCase):
 
     def test_crear_usuario_valido(self):
         """
-        Metodo que se encarga de la prueba de 
+        Metodo que se encarga de la prueba de
         agregar un usuario valido
         """
         data = self.usuario_data
@@ -66,7 +66,7 @@ class UsuarioSerializerTest(TestCase):
     def test_no_mas_de_un_superusuario(self):
         """
         Metodo que se encarga de la prueba que no
-        puede haber mas de un superusuario en el 
+        puede haber mas de un superusuario en el
         sistema
         """
         data = {
@@ -82,7 +82,7 @@ class UsuarioSerializerTest(TestCase):
 
     def test_email_invalido(self):
         """
-        Metodo que se encarga de la prueba que 
+        Metodo que se encarga de la prueba que
         verifica la validacion de que un email es
         valido
         """
@@ -109,9 +109,12 @@ class UsuarioSerializerTest(TestCase):
         """
         data = self.usuario_data
         data['email'] = "danielrs9705@gmail.com"
+        mensaje_error_1 = "Agrego perfectamente a pesar de "
+        mensaje_error_2 = "que existe un usuario registrado con ese email"
+        mensaje_error = mensaje_error_1 + mensaje_error_2
         usuario_serializer = UsuarioSerializer(data=data)
         self.assertFalse(usuario_serializer.is_valid(),
-                         msg="Agrego perfectamente a pesar de que existe un usuario registrado con ese email")
+                         msg=mensaje_error)
 
     def test_grupo_inexistente(self):
         """

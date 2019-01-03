@@ -1,8 +1,7 @@
 """
-Script que contiene los serializers 
+Script que contiene los serializers
 para el modelo Usuario
 """
-from django.contrib.auth.models import Group
 from rest_framework import serializers
 from .models import Usuario
 
@@ -12,7 +11,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     modelo de Usuario
     """
 
-    def validate_grupo(self, grupo):
+    def validate_grupo(self, grupo): # pylint: disable=no-self-use
         """
         Validator para el campo grupo: valida
         que si un usuario es SuperUsuario no exista
