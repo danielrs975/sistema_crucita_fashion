@@ -27,4 +27,5 @@ class Usuario(AbstractUser):
         datos de sus apartados.
     """
     grupo = models.ForeignKey(Group, on_delete=models.CASCADE)
+    email = models.EmailField(unique=True)
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'grupo']
