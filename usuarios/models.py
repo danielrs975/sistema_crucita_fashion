@@ -3,10 +3,9 @@ Script que contendra los modelos de la base
 de datos para este modulo
 '''
 from django.db import models # pylint: disable=unused-import
-from django.contrib.auth.models import AbstractUser 
+from django.contrib.auth.models import AbstractUser, Group
 
 # Create your models here.
-
 class Usuario(AbstractUser):
     """
     Clase que manejara los usuarios del sistema
@@ -23,7 +22,9 @@ class Usuario(AbstractUser):
         propio perfil. Ademas puede crear, eliminar,
         modificar datos de las ventas y los apartados
         - Cliente: Este usuario puede modificar
-        su propio perfil. Ademas puede crear, eliminar
-        y modificar datos de sus apartados.
+        su propio perfil, crear su propio usuario.
+        Ademas puede crear, eliminar y modificar
+        datos de sus apartados.
     """
-    pass
+    grupo = models.ForeignKey(Group, on_delete=models.CASCADE)
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'grupo']
