@@ -37,3 +37,5 @@ deploy:
     repo: danielrs975/sistema_crucita_fashion
     python: '3.6'
   skip_cleanup: true
+  run:
+    - "python manage.py migrate"
