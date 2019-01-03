@@ -9,7 +9,7 @@ from usuarios import views
 app_name = "inventario"
 
 urlpatterns = [
-    path('usuarios/crear', views.UsuarioCrearView.as_view(), name="crear"),
+    path('usuarios/crear', views.UsuarioCrearViewSuperUsuario.as_view(), name="crear"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
