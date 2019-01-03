@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from usuarios.models import Usuario, Group
 
-class UsuarioCrearView(APITestCase):
+class UsuarioCrearViewSuperUsuarioTest(APITestCase):
     """
     Clase que contiene las pruebas de 
     la vista crear usuario
@@ -94,3 +94,67 @@ class UsuarioCrearView(APITestCase):
         data = self.usuario_data
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+class UsuarioRegistroViewTest(APITestCase):
+    """
+    This class contains the tests for the 
+    UsuarioCrearView for no authenticated users
+
+    Esta clase contiene las pruebas para la vista
+    UsuarioCrearView para usuarios no autenticados
+    """
+    def setUp(self):
+        """
+        This method fill de database with information
+        to use in the tests
+
+        Este metodo llena la base de datos con
+        informacion para usar en las pruebas
+        """
+        for grupo in ["SuperUsuario", "Administrador", "Vendedor", "Cliente"]:
+            Group.objects.create(name=grupo)
+
+        Usuario.objects.create(
+            first_name="David",
+            last_name="Rodriguez",
+            username="dwest06",
+            email="david00dark@gmail.com",
+            grupo=Group.objects.get(name="Administrador"),
+            password="jaja123"
+        )
+        self.usuario_data = {
+            "first_name": "Rafael",
+            "last_name" : "Rodriguez",
+            "username"  : "rafaelrs",
+            "email"     : "hola@gmail.com",
+            "grupo"     : Group.objects.get(name="Administrador").pk,
+            "password"  : "jaja123"
+        }
+        self.url = reverse_lazy("usuarios:registro")
+    
+    def test_vista_con_usuario_autenticado(self):
+        """
+        Test that if a user is authenticated and
+        try to access the view, it is gonna be 
+        rejected
+
+        Prueba que si un usuario esta autenticado
+        y intenta acceder a la vista, sera rechazado
+        """
+        self.client.force_login(user=Usuario.objects.get(username="dwest06"))
+        data = self.usuario_data
+        response = self.client.post(self.url, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_vista_con_usuario_no_autenticado_registro(self):
+        """
+        Test that is a user is not authenticated and
+        try to make a POST to the view, it succeed
+
+        Prueba que si un usuario no esta autenticado
+        y intenta registrarse en la vista, tendra
+        exito
+        """
+        data = self.usuario_data
+        response = self.client.post(self.url, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
