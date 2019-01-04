@@ -42,3 +42,57 @@ class IsNotAuthenticated(permissions.BasePermission):
         """
         usuario = request.user
         return str(usuario) == "AnonymousUser"
+
+class AdministradorNoModificaSuperUsuarios(permissions.BasePermission):
+    """
+    This class implement the following permission:
+    Only the SuperUsuario can modify, see and
+    delete its information
+
+    Esta clase implementa el siguiente permiso:
+    Solo el SuperUsuario puede modificar, ver y
+    eliminar su propia informacion
+    """
+
+    def has_object_permission(self, request, view, obj):
+        """
+        This method verify that if the user is an
+        Administrador, and try to modify, delete or
+        see the details of the SuperUsuario or another
+        administrator
+
+        Este metodo verifica que si un usuario es
+        un Administrador, y intenta modificar, 
+        eliminar o ver los detalles del SuperUsuario o
+        de otro administrador
+        """
+        is_grupo_usuario_admin = request.user.grupo.name == "Administrador"
+        is_grupo_obj_superuser = (obj.grupo.name == "SuperUsuario" or 
+                                  obj.grupo.name == "Administrador")
+        if is_grupo_usuario_admin and is_grupo_obj_superuser:
+            return False
+
+        return True
+
+class UsuarioNoSeModificaAsiMismo(permissions.BasePermission):
+    """
+    This class implement the following permission:
+    Users can only modify users differents that its
+
+    Esta clase implementa el siguiente permiso:
+    Usuarios solo pueden modificar usuarios distintos
+    de el
+    """
+
+    def has_object_permission(self, request, view, obj):
+        """
+        This method verify that a user cant modify its own
+        information
+
+        Este metodo verifica que un usuario no pueda modificar
+        su propia informacion
+        """
+        usuario_request = request.user
+        usuario_a_modificar = obj
+
+        return usuario_request != usuario_a_modificar
