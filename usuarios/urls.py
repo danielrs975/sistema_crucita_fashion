@@ -10,9 +10,10 @@ app_name = "inventario"
 
 urlpatterns = [
     path('usuarios/crear', views.UsuarioCrearViewSuperUsuario.as_view(), name="crear"),
-    path('usuarios/registrarse', views.UsuarioRegistroView.as_view(), name="registro"),
+    path('registro/', views.UsuarioRegistroView.as_view(), name="registro"),
     path('usuarios/admin/detalle/<int:pk>',
-         views.AdministracionUsuariosView.as_view(), name="detalles")
+         views.AdministracionUsuariosView.as_view(), name="detalles"),
+    path('login/', views.LoginView.as_view(), name="login")
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
