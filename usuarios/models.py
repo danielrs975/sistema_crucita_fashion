@@ -5,6 +5,8 @@ de datos para este modulo
 from django.db import models # pylint: disable=unused-import
 from django.contrib.auth.models import AbstractUser, Group
 
+GRUPOS = ["SuperUsuario", "Administrador", "Vendedor", "Cliente"]
+
 # Create your models here.
 class Usuario(AbstractUser):
     """
