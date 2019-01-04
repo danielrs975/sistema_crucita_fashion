@@ -7,7 +7,7 @@ from inventario.models import Producto
 
 # Create your models here.
 
-class Venta(models.Model):
+class Ventas(models.Model):
 	producto = models.ManyToManyField(Producto)
 	codigo = models.CharField(unique=True, max_length=500)
 	costo_total = models.FloatField()
