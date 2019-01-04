@@ -26,6 +26,6 @@ class Usuario(AbstractUser):
         Ademas puede crear, eliminar y modificar
         datos de sus apartados.
     """
-    grupo = models.ForeignKey(Group, on_delete=models.CASCADE)
+    grupo = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'grupo']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
