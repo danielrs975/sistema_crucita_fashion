@@ -155,7 +155,7 @@ class RegistroSerializerTest(TestCase):
         Es rechazado
         """
         data = self.usuario_data
-        data['grupo'] = Group.objects.get(name="Administrador")
+        data['grupo'] = Group.objects.get(name="Administrador").pk
         registro_serializer = RegistroSerializer(data=data)
         self.assertFalse(registro_serializer.is_valid(),
                          msg="Agrego con exito a pesar de que el grupo es Administrador")
@@ -166,10 +166,13 @@ class RegistroSerializerTest(TestCase):
         su grupo es cliente. Es aceptado
         """
         data = self.usuario_data
-        data['cliente'] = Group.objects.get(name="Cliente")
+        data['grupo'] = Group.objects.get(name="Cliente").pk
         registro_serializer = RegistroSerializer(data=data)
         self.assertTrue(registro_serializer.is_valid(),
                         msg=registro_serializer.errors)
+        registro_serializer.save()
+        usuario_creado = Usuario.objects.get(username="rafaelrs")
+        self.assertEqual(usuario_creado.grupo, Group.objects.get(name="Cliente"))
 
     def test_grupo_es_none(self):
         """
@@ -179,3 +182,6 @@ class RegistroSerializerTest(TestCase):
         data = self.usuario_data
         registro_serializer = RegistroSerializer(data=data)
         self.assertTrue(registro_serializer.is_valid(), msg=registro_serializer.errors)
+        registro_serializer.save()
+        usuario_creado = Usuario.objects.get(username="rafaelrs")
+        self.assertEqual(usuario_creado.grupo, Group.objects.get(name="Cliente"))

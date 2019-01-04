@@ -49,8 +49,18 @@ class RegistroSerializer(serializers.ModelSerializer):
         message = "Este serializer no admite la escogencia de un grupo"
         if grupo is not None and grupo.name in ["SuperUsuario", "Administrador", "Vendedor"]:
             raise serializers.ValidationError(message)
+        return grupo
 
-        return Group.objects.get(name="Vendedor")
+    def create(self, validated_data):
+        """
+        Este metodo sobreescribe el create original
+        para agregar como informacion el grupo donde
+        pertenece el usuario que va a ser Cliente
+        """
+        usuario_registrado = Usuario.objects.create(**validated_data)
+        usuario_registrado.grupo = Group.objects.get(name="Cliente")
+        usuario_registrado.save()
+        return usuario_registrado
 
     class Meta:
         model = Usuario
