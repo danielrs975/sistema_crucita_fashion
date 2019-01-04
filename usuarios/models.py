@@ -30,4 +30,4 @@ class Usuario(AbstractUser):
     """
     grupo = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'grupo']
