@@ -12,7 +12,7 @@ urlpatterns = [
     path('usuarios/crear', views.UsuarioCrearViewSuperUsuario.as_view(), name="crear"),
     path('usuarios/registrarse', views.UsuarioRegistroView.as_view(), name="registro"),
     path('usuarios/admin/detalle/<int:pk>',
-         views.UsuarioDetallesOtrosUsuariosView.as_view(), name="detalles")
+         views.AdministracionUsuariosView.as_view(), name="detalles")
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
