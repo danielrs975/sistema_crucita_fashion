@@ -7,7 +7,7 @@ from rest_framework import generics, permissions
 from usuarios.models import Usuario
 from usuarios.serializers import UsuarioSerializer
 from usuarios.permissions import (
-    EsSuperUsuarioOAdministrador, 
+    EsSuperUsuarioOAdministrador,
     IsNotAuthenticated,
     AdministradorNoModificaSuperUsuarios,
     UsuarioNoSeModificaAsiMismo)
@@ -51,7 +51,7 @@ class UsuarioRegistroView(generics.CreateAPIView):
         IsNotAuthenticated,
     )
 
-class UsuarioDetallesOtrosUsuariosView(generics.RetrieveUpdateDestroyAPIView):
+class UsuarioDetallesOtrosUsuariosView(generics.RetrieveUpdateDestroyAPIView): # pylint: disable=too-many-ancestors
     """
     Vista que se encarga de ver los detalles
     de un usuario, poder eliminarlos y modificarlos.

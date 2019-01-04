@@ -62,12 +62,12 @@ class AdministradorNoModificaSuperUsuarios(permissions.BasePermission):
         administrator
 
         Este metodo verifica que si un usuario es
-        un Administrador, y intenta modificar, 
+        un Administrador, y intenta modificar,
         eliminar o ver los detalles del SuperUsuario o
         de otro administrador
         """
         is_grupo_usuario_admin = request.user.grupo.name == "Administrador"
-        is_grupo_obj_superuser = (obj.grupo.name == "SuperUsuario" or 
+        is_grupo_obj_superuser = (obj.grupo.name == "SuperUsuario" or
                                   obj.grupo.name == "Administrador")
         if is_grupo_usuario_admin and is_grupo_obj_superuser:
             return False

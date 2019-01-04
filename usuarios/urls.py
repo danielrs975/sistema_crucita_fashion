@@ -11,7 +11,7 @@ app_name = "inventario"
 urlpatterns = [
     path('usuarios/crear', views.UsuarioCrearViewSuperUsuario.as_view(), name="crear"),
     path('usuarios/registrarse', views.UsuarioRegistroView.as_view(), name="registro"),
-    path('usuarios/admin/detalle/<int:pk>', 
+    path('usuarios/admin/detalle/<int:pk>',
          views.UsuarioDetallesOtrosUsuariosView.as_view(), name="detalles")
 ]
 

@@ -201,7 +201,7 @@ class UsuarioDetallesViewTest(APITestCase):
             grupo=Group.objects.get(name="Vendedor"),
             password="jaja123"
         )
-        self.url_usuario_1 = reverse_lazy("usuarios:detalles", 
+        self.url_usuario_1 = reverse_lazy("usuarios:detalles",
                                           args=(Usuario.objects.get(username="danielrs").pk,))
         self.url_usuario_2 = reverse_lazy("usuarios:detalles",
                                           args=(Usuario.objects.get(username="dwest06").pk,))
@@ -297,7 +297,7 @@ class UsuarioDetallesViewTest(APITestCase):
         data = self.usuario_data
         response = self.client.put(self.url_usuario_1, data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
-    
+
     def test_update_administrador_modifica_administrador(self):
         """
         This method test that if an administrator try to
@@ -310,7 +310,7 @@ class UsuarioDetallesViewTest(APITestCase):
         data = self.usuario_data
         response = self.client.put(self.url_usuario_2, data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
-    
+
     def test_update_administrador_usuario_normal(self):
         """
         This method test that if an administrator try to
@@ -336,7 +336,7 @@ class UsuarioDetallesViewTest(APITestCase):
         data = self.usuario_data
         response = self.client.put(self.url_usuario_2, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
-    
+
     def test_update_superusuario_se_modifica_asi_mismo(self):
         """
         This method test that if an superuser try to
@@ -349,7 +349,7 @@ class UsuarioDetallesViewTest(APITestCase):
         data = self.usuario_data
         response = self.client.put(self.url_usuario_1, data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
-    
+
     def test_update_superusuario_modifica_usuario_normal(self):
         """
         This method test that if an superuser try to
@@ -386,7 +386,7 @@ class UsuarioDetallesViewTest(APITestCase):
         self.client.force_login(user=self.usuario_admin)
         response = self.client.delete(self.url_usuario_2)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
-    
+
     def test_delete_administrador_usuario_normal(self):
         """
         This method test that if an administrator try to
