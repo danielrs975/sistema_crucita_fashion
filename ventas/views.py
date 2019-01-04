@@ -4,8 +4,8 @@ la informacion que proveera este modulo
 '''
 from django.shortcuts import render # pylint: disable=unused-import
 from rest_framework import generics
-from .models import Ventas
-from .serializers import VentasSerializer
+from ventas.models import Ventas
+from ventas.serializers import VentasSerializer
 
 # Create your views here.
 
