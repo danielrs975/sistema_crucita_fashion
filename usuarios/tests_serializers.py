@@ -4,8 +4,8 @@ relacionadas con los serializers de esta
 aplicacion
 """
 from django.test import TestCase
-from .serializers import UsuarioSerializer
-from .models import Usuario, Group
+from .serializers import UsuarioSerializer, RegistroSerializer
+from .models import Usuario, Group, GRUPOS
 
 class UsuarioSerializerTest(TestCase):
     """
@@ -17,7 +17,7 @@ class UsuarioSerializerTest(TestCase):
         Metodo que agrega informacion a la base de
         datos para hacer las pruebas
         """
-        for grupo in ["SuperUsuario", "Administrador", "Vendedor", "Cliente"]:
+        for grupo in GRUPOS:
             Group.objects.create(name=grupo)
 
         Usuario.objects.create(
@@ -127,3 +127,55 @@ class UsuarioSerializerTest(TestCase):
         usuario_serializer = UsuarioSerializer(data=data)
         self.assertFalse(usuario_serializer.is_valid(),
                          msg="Agrego con exito a pesar de que el grupo no existe")
+
+class RegistroSerializerTest(TestCase):
+    """
+    Clase que contiene las pruebas para
+    el serializer de Registro
+    """
+    def setUp(self):
+        """
+        Llena la base de datos con informacion
+        inicial para correr las pruebas
+        """
+        for grupo in GRUPOS:
+            Group.objects.create(name=grupo)
+        self.usuario_data = {
+            "first_name": "Rafael",
+            "last_name" : "Rodriguez",
+            "email"     : "rafaelrs975@gmail.com",
+            "username"  : "rafaelrs",
+            "password"  : "jaja123"
+        }
+    
+    def test_grupo_no_puede_ser_distinto_a_vendedor(self):
+        """
+        Prueba que si un usuario que va a registrarse
+        tiene un grupo distinto a None o a cliente.
+        Es rechazado
+        """
+        data = self.usuario_data
+        data['grupo'] = Group.objects.get(name="Administrador")
+        registro_serializer = RegistroSerializer(data=data)
+        self.assertFalse(registro_serializer.is_valid(),
+                         msg="Agrego con exito a pesar de que el grupo es Administrador")
+
+    def test_grupo_es_cliente(self):
+        """
+        Prueba que si un usuario que va a a registrarse
+        su grupo es cliente. Es aceptado
+        """
+        data = self.usuario_data
+        data['cliente'] = Group.objects.get(name="Cliente")
+        registro_serializer = RegistroSerializer(data=data)
+        self.assertTrue(registro_serializer.is_valid(),
+                        msg=registro_serializer.errors)
+
+    def test_grupo_es_none(self):
+        """
+        Prueba que si un usuario que va a registrarse
+        su grupo es None. Es agregado exitosamente
+        """
+        data = self.usuario_data
+        registro_serializer = RegistroSerializer(data=data)
+        self.assertTrue(registro_serializer.is_valid(), msg=registro_serializer.errors)
