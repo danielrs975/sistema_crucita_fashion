@@ -110,3 +110,12 @@ class VendedorOnly(permissions.BasePermission):
         """
         usuario = request.user
         return str(usuario.grupo) == "Vendedor"
+    
+    def has_object_permission(self, request, view, obj):
+        """
+        Metodo que verifica que los detalles
+        de los usuarios que el vendedor puede ver
+        solo sea del tipo Cliente
+        """
+        grupo = obj.grupo
+        return str(grupo) == "Cliente"
