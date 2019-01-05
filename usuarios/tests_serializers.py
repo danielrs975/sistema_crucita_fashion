@@ -148,7 +148,7 @@ class RegistroSerializerTest(TestCase):
             "password"  : "jaja123",
             "repeat_password": "jaja123"
         }
-    
+
     def test_grupo_no_puede_ser_distinto_a_vendedor(self):
         """
         Prueba que si un usuario que va a registrarse
@@ -171,7 +171,7 @@ class RegistroSerializerTest(TestCase):
         registro_serializer = RegistroSerializer(data=data)
         self.assertFalse(registro_serializer.is_valid(),
                          msg="Agrego con exito a pesar de que las claves son distintas")
-    
+
     def test_claves_son_iguales(self):
         """
         Prueba que si las claves son iguales
@@ -234,13 +234,13 @@ class DetallesSerializerTest(TestCase):
             "username": "danielrs",
             "grupo": Group.objects.get(name="SuperUsuario").pk
         }
-    
-    def test_existencia_serializer(self):
+
+    def test_existencia_serializer(self): # pylint: disable=no-self-use
         """
         Prueba la existencia del serializer
         """
         DetallesSerializer()
-    
+
     def test_serializer_solo_muestra_informacion_necesaria(self):
         """
         Prueba que la informacion solo es la necesaria

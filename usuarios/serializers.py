@@ -51,7 +51,7 @@ class RegistroSerializer(serializers.ModelSerializer):
     Clase que contiene el serializer que sera usado
     para el registro
     """
-    def validate(self, data):
+    def validate(self, data): # pylint: disable=arguments-differ
         """
         Valida que la clave y el campo donde
         se repite la clave sean iguales

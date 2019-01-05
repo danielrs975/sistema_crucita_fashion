@@ -40,7 +40,7 @@ class LoginView(views.APIView):
     al sistema
     """
 
-    def post(self, request, format=None):
+    def post(self, request):
         """
         Sobreescribe la funcion del post
         para que pueda hacer el login en la api
@@ -55,8 +55,7 @@ class LoginView(views.APIView):
         if user is not None and user.is_active:
             login(request, user)
             return Response(status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class AdministracionCrearUsuariosView(generics.CreateAPIView):
     """
