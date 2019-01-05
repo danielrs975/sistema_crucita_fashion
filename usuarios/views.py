@@ -80,7 +80,7 @@ class AdministracionCrearUsuariosView(generics.CreateAPIView):
 class AdministracionUsuariosView(generics.RetrieveDestroyAPIView): # pylint: disable=too-many-ancestors
     """
     Vista que se encarga de ver los detalles
-    de un usuario, poder eliminarlos y modificarlos.
+    de un usuario, poder eliminarlos.
     Tipos de usuario que pueden usar esta vista
         - SuperUsuario
         - Administrador
@@ -90,7 +90,7 @@ class AdministracionUsuariosView(generics.RetrieveDestroyAPIView): # pylint: dis
         - Cliente
 
     This view is in charge of show the
-    details of a user, can delete it and modify it
+    details of a user, can delete it.
     Types of users that can use this view
         - SuperUsuario
         - Administrador
