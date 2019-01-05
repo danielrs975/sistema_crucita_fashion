@@ -96,3 +96,17 @@ class UsuarioNoSeModificaAsiMismo(permissions.BasePermission):
         usuario_a_modificar = obj
 
         return usuario_request != usuario_a_modificar
+
+class VendedorOnly(permissions.BasePermission):
+    """
+    Clase que implementa el permiso
+    de que solo los vendedores pueden ver la vista
+    en la cual esta este permiso
+    """
+    def has_permission(self, request, view):
+        """
+        Metodo que implementa el permiso
+        de VendedorOnly
+        """
+        usuario = request.user
+        return str(usuario.grupo) == "Vendedor"
