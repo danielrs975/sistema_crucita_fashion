@@ -12,7 +12,7 @@ urlpatterns = [
     path('usuarios/admin/crear', views.AdministracionCrearUsuariosView.as_view(), name="crear"),
     path('registro/', views.UsuarioRegistroView.as_view(), name="registro"),
     path('usuarios/admin/detalle/<int:pk>',
-         views.AdministracionUsuariosView.as_view(), name="detalles"),
+         views.AdministracionUsuariosView.as_view(), name="administracion"),
     path('login/', views.LoginView.as_view(), name="login")
 ]
 
