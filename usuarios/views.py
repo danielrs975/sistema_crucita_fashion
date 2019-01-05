@@ -16,6 +16,23 @@ from usuarios.permissions import (
 
 # Create your views here.
 
+class UsuarioRegistroView(generics.CreateAPIView):
+    """
+    Vista que se encarga de manejar la creacion de
+    los usuarios creados por los clientes que van
+    a usar la api. Tipo de usuarios que pueden
+    usar esta vista
+        - Usuarios no autenticados
+    Esta vista maneja la creacion de los usuarios
+    que pertenezcan a estos grupos:
+        - Cliente
+    """
+    queryset = Usuario.objects.all()
+    serializer_class = RegistroSerializer
+    permission_classes = (
+        IsNotAuthenticated,
+    )
+
 class LoginView(views.APIView):
     """
     Vista que maneja el login de los usuarios
@@ -38,7 +55,7 @@ class LoginView(views.APIView):
             login(request, user)
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class UsuarioCrearViewSuperUsuario(generics.CreateAPIView):
     """
@@ -58,23 +75,6 @@ class UsuarioCrearViewSuperUsuario(generics.CreateAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
         EsSuperUsuarioOAdministrador,
-    )
-
-class UsuarioRegistroView(generics.CreateAPIView):
-    """
-    Vista que se encarga de manejar la creacion de
-    los usuarios creados por los clientes que van
-    a usar la api. Tipo de usuarios que pueden
-    usar esta vista
-        - Usuarios no autenticados
-    Esta vista maneja la creacion de los usuarios
-    que pertenezcan a estos grupos:
-        - Cliente
-    """
-    queryset = Usuario.objects.all()
-    serializer_class = RegistroSerializer
-    permission_classes = (
-        IsNotAuthenticated,
     )
 
 class AdministracionUsuariosView(generics.RetrieveUpdateDestroyAPIView): # pylint: disable=too-many-ancestors
