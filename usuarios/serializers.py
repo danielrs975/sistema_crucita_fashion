@@ -96,3 +96,13 @@ class RegistroSerializer(serializers.ModelSerializer):
             'password',
             'repeat_password'
         )
+
+class DetallesSerializer(serializers.ModelSerializer):
+    """
+    Clase que implementa el serializer
+    para los detalles de un usuario
+    """
+
+    class Meta:
+        model = Usuario
+        fields = ('first_name', 'last_name', 'email', 'grupo', 'username')

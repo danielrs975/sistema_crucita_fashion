@@ -4,7 +4,7 @@ relacionadas con los serializers de esta
 aplicacion
 """
 from django.test import TestCase
-from .serializers import UsuarioSerializer, RegistroSerializer
+from .serializers import UsuarioSerializer, RegistroSerializer, DetallesSerializer
 from .models import Usuario, Group, GRUPOS
 
 class UsuarioSerializerTest(TestCase):
@@ -207,3 +207,52 @@ class RegistroSerializerTest(TestCase):
         registro_serializer.save()
         usuario_creado = Usuario.objects.get(username="rafaelrs")
         self.assertEqual(usuario_creado.grupo, Group.objects.get(name="Cliente"))
+
+class DetallesSerializerTest(TestCase):
+    """
+    Clase que contiene las pruebas del
+    serializer que va tener la
+    informacion no confidencial de un
+    usuario
+    """
+    def setUp(self):
+        """
+        Inicializa la base de datos con
+        informacion para correr las pruebas
+        """
+        self.usuario = Usuario.objects.create(
+            first_name="Daniel",
+            last_name="Rodriguez",
+            email="danielrs9705@gmail.com",
+            username="danielrs",
+            grupo=Group.objects.create(name="SuperUsuario")
+        )
+        self.usuario_data = {
+            "first_name": "Daniel",
+            "last_name" : "Rodriguez",
+            "email" : "danielrs9705@gmail.com",
+            "username": "danielrs",
+            "grupo": Group.objects.get(name="SuperUsuario").pk
+        }
+    
+    def test_existencia_serializer(self):
+        """
+        Prueba la existencia del serializer
+        """
+        DetallesSerializer()
+    
+    def test_serializer_solo_muestra_informacion_necesaria(self):
+        """
+        Prueba que la informacion solo es la necesaria
+        """
+        campos = ["first_name", "last_name", "email", "grupo", "username"]
+        campos_serializer = [llaves for llaves in DetallesSerializer().get_fields().keys()]
+        self.assertEqual(campos, campos_serializer, msg="Los campos no son iguales")
+
+    def test_serializer_esta_en_el_formato_correcto(self):
+        """
+        Prueba que el serializer este retornando
+        en el formato correcto
+        """
+        serializer = DetallesSerializer(self.usuario)
+        self.assertEqual(serializer.data, self.usuario_data, msg="Los formatos no son iguales")
