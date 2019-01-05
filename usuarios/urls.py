@@ -9,7 +9,7 @@ from usuarios import views
 app_name = "inventario"
 
 urlpatterns = [
-    path('usuarios/crear', views.UsuarioCrearViewSuperUsuario.as_view(), name="crear"),
+    path('usuarios/admin/crear', views.AdministracionCrearUsuariosView.as_view(), name="crear"),
     path('registro/', views.UsuarioRegistroView.as_view(), name="registro"),
     path('usuarios/admin/detalle/<int:pk>',
          views.AdministracionUsuariosView.as_view(), name="detalles"),

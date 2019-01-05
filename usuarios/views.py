@@ -57,7 +57,7 @@ class LoginView(views.APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class UsuarioCrearViewSuperUsuario(generics.CreateAPIView):
+class AdministracionCrearUsuariosView(generics.CreateAPIView):
     """
     Vista que se encarga de la creacion de los
     usuarios para el sistema. Tipo de usuarios
