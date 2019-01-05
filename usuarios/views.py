@@ -77,7 +77,7 @@ class AdministracionCrearUsuariosView(generics.CreateAPIView):
         EsSuperUsuarioOAdministrador,
     )
 
-class AdministracionUsuariosView(generics.RetrieveUpdateDestroyAPIView): # pylint: disable=too-many-ancestors
+class AdministracionUsuariosView(generics.RetrieveDestroyAPIView): # pylint: disable=too-many-ancestors
     """
     Vista que se encarga de ver los detalles
     de un usuario, poder eliminarlos y modificarlos.
