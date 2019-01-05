@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from rest_framework import generics, permissions, views, status
 from rest_framework.response import Response
 from usuarios.models import Usuario
-from usuarios.serializers import UsuarioSerializer
+from usuarios.serializers import UsuarioSerializer, RegistroSerializer
 from usuarios.permissions import (
     EsSuperUsuarioOAdministrador,
     IsNotAuthenticated,
@@ -15,6 +15,30 @@ from usuarios.permissions import (
     UsuarioNoSeModificaAsiMismo)
 
 # Create your views here.
+
+class LoginView(views.APIView):
+    """
+    Vista que maneja el login de los usuarios
+    al sistema
+    """
+
+    def post(self, request, format=None):
+        """
+        Sobreescribe la funcion del post
+        para que pueda hacer el login en la api
+        """
+        data = request.data
+
+        username = data.get('username', None)
+        password = data.get('password', None)
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None and user.is_active:
+            login(request, user)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class UsuarioCrearViewSuperUsuario(generics.CreateAPIView):
     """
@@ -48,7 +72,7 @@ class UsuarioRegistroView(generics.CreateAPIView):
         - Cliente
     """
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    serializer_class = RegistroSerializer
     permission_classes = (
         IsNotAuthenticated,
     )
@@ -83,27 +107,3 @@ class AdministracionUsuariosView(generics.RetrieveUpdateDestroyAPIView): # pylin
         AdministradorNoModificaSuperUsuarios,
         UsuarioNoSeModificaAsiMismo
     )
-
-class LoginView(views.APIView):
-    """
-    Vista que maneja el login de los usuarios
-    al sistema
-    """
-
-    def post(self, request, format=None):
-        """
-        Sobreescribe la funcion del post
-        para que pueda hacer el login en la api
-        """
-        data = request.data
-
-        username = data.get('username', None)
-        password = data.get('password', None)
-
-        user = authenticate(username=username, password=password)
-
-        if user is not None and user.is_active:
-            login(request, user)
-            return Response(status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
