@@ -5,7 +5,7 @@ para las vistas de esta aplicacion
 from django.urls import reverse_lazy
 from rest_framework.test import APITestCase
 from rest_framework import status
-from usuarios.models import Usuario, Group
+from usuarios.models import Usuario, Group, GRUPOS
 
 class UsuarioCrearViewSuperUsuarioTest(APITestCase):
     """
@@ -434,3 +434,37 @@ class UsuarioDetallesViewTest(APITestCase):
         self.client.force_login(user=self.usuario_superuser)
         response = self.client.delete(self.url_usuario_1)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+class LoginTest(APITestCase):
+    """
+    Clase que contiene las pruebas de la
+    vista del login
+    """
+    def setUp(self):
+        """
+        Llena la base de datos con informacion inicial
+        para correr las pruebas
+        """
+        for grupo in GRUPOS:
+            Group.objects.create(name=grupo)
+        Usuario.objects.create(
+            first_name="Daniel",
+            last_name="Rodriguez",
+            username="danielrs",
+            grupo=Group.objects.get(name="Administrador"),
+            password="jaja123"
+        )
+        self.usuario_login = {
+            'username': "danielrs",
+            'password': "jaja123"
+        }
+        self.url = reverse_lazy("usuarios:login")
+
+    def test_login_con_informacion_valida(self):
+        """
+        Prueba que el login se realiza con exito
+        si la informacion suministrada es correcta
+        """
+        data = self.usuario_login
+        response = self.client.post(self.url, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
