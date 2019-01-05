@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from rest_framework import generics, permissions, views, status
 from rest_framework.response import Response
 from usuarios.models import Usuario
-from usuarios.serializers import UsuarioSerializer, RegistroSerializer
+from usuarios.serializers import UsuarioSerializer, RegistroSerializer, DetallesSerializer
 from usuarios.permissions import (
     EsSuperUsuarioOAdministrador,
     IsNotAuthenticated,
@@ -101,7 +101,7 @@ class AdministracionUsuariosView(generics.RetrieveDestroyAPIView): # pylint: dis
         - Cliente
     """
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    serializer_class = DetallesSerializer
     permission_classes = (
         permissions.IsAuthenticated,
         EsSuperUsuarioOAdministrador,
@@ -115,7 +115,7 @@ class VendedorUsuarioView(generics.RetrieveAPIView):
     de un usuario siendo vendedor
     """
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    serializer_class = DetallesSerializer
     permission_classes = (
         permissions.IsAuthenticated,
         VendedorOnly,
