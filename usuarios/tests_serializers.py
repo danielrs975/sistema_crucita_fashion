@@ -145,7 +145,8 @@ class RegistroSerializerTest(TestCase):
             "last_name" : "Rodriguez",
             "email"     : "rafaelrs975@gmail.com",
             "username"  : "rafaelrs",
-            "password"  : "jaja123"
+            "password"  : "jaja123",
+            "repeat_password": "jaja123"
         }
     
     def test_grupo_no_puede_ser_distinto_a_vendedor(self):
@@ -159,6 +160,27 @@ class RegistroSerializerTest(TestCase):
         registro_serializer = RegistroSerializer(data=data)
         self.assertFalse(registro_serializer.is_valid(),
                          msg="Agrego con exito a pesar de que el grupo es Administrador")
+
+    def test_claves_son_distintas(self):
+        """
+        Prueba que si las claves son distintas
+        muestra un error de validacion
+        """
+        data = self.usuario_data
+        data['repeat_password'] = "jaja1234"
+        registro_serializer = RegistroSerializer(data=data)
+        self.assertFalse(registro_serializer.is_valid(),
+                         msg="Agrego con exito a pesar de que las claves son distintas")
+    
+    def test_claves_son_iguales(self):
+        """
+        Prueba que si las claves son iguales
+        logra agregar al usuario nuevo
+        """
+        data = self.usuario_data
+        registro_serializer = RegistroSerializer(data=data)
+        self.assertTrue(registro_serializer.is_valid(),
+                        msg=registro_serializer.errors)
 
     def test_grupo_es_cliente(self):
         """

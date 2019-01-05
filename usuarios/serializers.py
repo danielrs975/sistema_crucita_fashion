@@ -23,6 +23,18 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("No puede haber mas SuperUsuarios")
         return grupo
 
+    def create(self, validated_data):
+        """
+        Este metodo sobreescribe el create original
+        para agregar como informacion del atributo
+        repeat_password
+        """
+        usuario_registrado = Usuario.objects.create(**validated_data)
+        usuario_registrado.repeat_password = validated_data['password']
+        usuario_registrado.set_password(validated_data['password'])
+        usuario_registrado.save()
+        return usuario_registrado
+
     class Meta:
         model = Usuario
         fields = (
@@ -39,6 +51,16 @@ class RegistroSerializer(serializers.ModelSerializer):
     Clase que contiene el serializer que sera usado
     para el registro
     """
+    def validate(self, data):
+        """
+        Valida que la clave y el campo donde
+        se repite la clave sean iguales
+        """
+        clave = data['password']
+        clave_repetida = data['repeat_password']
+        if clave != clave_repetida:
+            raise serializers.ValidationError("Las claves no son iguales")
+        return data
 
     def validate_grupo(self, grupo): # pylint: disable=no-self-use
         """
@@ -71,5 +93,6 @@ class RegistroSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'grupo',
-            'password'
+            'password',
+            'repeat_password'
         )
