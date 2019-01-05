@@ -12,7 +12,8 @@ from usuarios.permissions import (
     EsSuperUsuarioOAdministrador,
     IsNotAuthenticated,
     AdministradorNoModificaSuperUsuarios,
-    UsuarioNoSeModificaAsiMismo)
+    UsuarioNoSeModificaAsiMismo,
+    VendedorOnly,)
 
 # Create your views here.
 
@@ -106,4 +107,16 @@ class AdministracionUsuariosView(generics.RetrieveDestroyAPIView): # pylint: dis
         EsSuperUsuarioOAdministrador,
         AdministradorNoModificaSuperUsuarios,
         UsuarioNoSeModificaAsiMismo
+    )
+
+class VendedorUsuarioView(generics.RetrieveAPIView):
+    """
+    Clase que maneja la vista de los detalles
+    de un usuario siendo vendedor
+    """
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = (
+        permissions.IsAuthenticated,
+        VendedorOnly,
     )

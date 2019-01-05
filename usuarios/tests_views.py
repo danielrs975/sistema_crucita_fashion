@@ -512,6 +512,125 @@ class AdministracionUsuariosViewTest(APITestCase):
         response = self.client.delete(self.url_cliente)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, msg=response.data)
 
+    # ------------------------------------------------------------------------------------------- #
 
-
+class VendedorUsuarioView(APITestCase):
+    """
+    Clase que contiene las pruebas de la vista
+    de Vendedor
+    """
+    def setUp(self):
+        """
+        Inicializa la base de datos con informacion
+        para poder correr las pruebas
+        """
+        self.grupos = [
+            Group.objects.create(name=grupo) for grupo in GRUPOS
+        ]
+        self.superusuario = Usuario.objects.create(
+            first_name="Daniel",
+            last_name="Rodriguez",
+            email="danielrs9705@gmail.com",
+            grupo=self.grupos[0],
+            username="danielrs",
+            is_superuser=True,
+        )
+        self.superusuario.set_password('jaja123')
+        self.superusuario.save()
+        self.admin = Usuario.objects.create(
+            first_name="Rafael",
+            last_name="Rodriguez",
+            email="rafael@gmail.com",
+            grupo=self.grupos[1],
+            username="rafaelrs",
+        )
+        self.admin.set_password('jaja123')
+        self.admin.save()
+        self.admin_2 = Usuario.objects.create(
+            first_name="Rafael",
+            last_name="Rodriguez",
+            email="rafaelrs975@gmail.com",
+            grupo=self.grupos[1],
+            username="rafaeljunior",
+        )
+        self.admin_2.set_password('jaja123')
+        self.admin_2.save()
+        self.vendedor = Usuario.objects.create(
+            first_name="David",
+            last_name="Rodriguez",
+            email="david@gmail.com",
+            grupo=self.grupos[2],
+            username="dwest06",
+        )
+        self.vendedor.set_password('jaja123')
+        self.vendedor.save()
+        self.cliente = Usuario.objects.create(
+            first_name="Bertha",
+            last_name="Palaos",
+            email="bertha@gmail.com",
+            grupo=self.grupos[3],
+            username="bertha",
+        )
+        self.login = reverse_lazy("usuarios:login")
+        self.url = reverse_lazy("usuarios:vendedor_detalles", args=(1,))
+        self.usuarios = ["danielrs", "rafaelrs", "dwest06"]
+    
+    def test_de_la_vista(self):
+        """
+        Metodo que prueba la existencia de la vista
+        """
+        views.VendedorUsuarioView.as_view()
+    
+    def test_url_de_la_vista(self):
+        """
+        Metodo que prueba la existencia de un url
+        para la vista
+        """
+        self.assertEqual("/usuarios/vendedor/detalles/1",
+                         reverse_lazy("usuarios:vendedor_detalles", args=(1,)))
+    
+    # ------GRUPO DE PRUEBAS DE LOS PERMISOS DE QUIENES PUEDEN VER ESTA VISTA-------------------- #
+    def test_usuario_tiene_que_estar_autenticado(self):
+        """
+        Prueba que el usuario tiene que estar
+        autenticado para ver la vista
+        """
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+    
+    def test_solo_vendedor_puede_acceder_a_esta_vista(self):
+        """
+        Prueba que solo los vendedores
+        pueden entrar en esta vista
+        """
+        for usuario in ["danielrs", "rafaelrs", "bertha"]:    
+            self.client.post(self.login, data={"username": usuario, "password": "jaja123"},
+                            format='json')
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+            self.client.logout()
+        self.client.post(self.login, data={"username": "dwest06", "password": "jaja123"},
+                         format='json')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, msg=response.data)
+    
+    # -----GRUPO DE PRUEBAS QUE EL VENDEDOR SOLO ACCEDE A LOS DETALLES DE LOS CLIENTES ------------ #
+    def test_vendedor_solo_puede_ver_los_detalles_de_un_cliente(self):
+        """
+        Prueba que un vendedor solo puede
+        ver detalles de los clientes
+        """
+        self.client.post(self.login, data={"username": "dwest06", "password": "jaja123"},
+                         format='json')
+        id_usuarios = [
+            Usuario.objects.get(username=username).pk for username in self.usuarios
+        ]
+        for ids in id_usuarios:
+            url = reverse_lazy("usuarios:vendedor_detalles", args=(ids,))
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+        
+        url_cliente = reverse_lazy("usuarios:vendedor_detalles", args=(self.cliente.pk,))
+        response = self.client.get(url_cliente)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
