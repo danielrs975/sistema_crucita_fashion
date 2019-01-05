@@ -59,6 +59,7 @@ class RegistroSerializer(serializers.ModelSerializer):
         """
         usuario_registrado = Usuario.objects.create(**validated_data)
         usuario_registrado.grupo = Group.objects.get(name="Cliente")
+        usuario_registrado.set_password(validated_data['password'])
         usuario_registrado.save()
         return usuario_registrado
 
