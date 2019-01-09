@@ -119,3 +119,15 @@ class VendedorUsuarioView(generics.RetrieveAPIView):
         permissions.IsAuthenticated,
         VendedorOnly,
     )
+
+class PerfilView(generics.UpdateAPIView):
+    """
+    Clase que implementa la vista que permite
+    al usuario actualizar la informacion de
+    su perfil
+    """
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = (
+        permissions.IsAuthenticated
+    )
