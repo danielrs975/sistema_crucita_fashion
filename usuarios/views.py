@@ -13,7 +13,9 @@ from usuarios.permissions import (
     IsNotAuthenticated,
     AdministradorNoModificaSuperUsuarios,
     UsuarioNoSeModificaAsiMismo,
-    VendedorOnly,)
+    VendedorOnly,
+    OwnerOnly,
+)
 
 # Create your views here.
 
@@ -120,7 +122,7 @@ class VendedorUsuarioView(generics.RetrieveAPIView):
         VendedorOnly,
     )
 
-class PerfilView(generics.UpdateAPIView):
+class PerfilView(generics.RetrieveUpdateAPIView):
     """
     Clase que implementa la vista que permite
     al usuario actualizar la informacion de
@@ -129,5 +131,6 @@ class PerfilView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = (
-        permissions.IsAuthenticated
+        permissions.IsAuthenticated,
+        OwnerOnly,
     )

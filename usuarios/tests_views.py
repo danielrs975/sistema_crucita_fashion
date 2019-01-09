@@ -637,3 +637,108 @@ class VendedorUsuarioView(APITestCase): # pylint: disable=too-many-instance-attr
         url_cliente = reverse_lazy("usuarios:vendedor_detalles", args=(self.cliente.pk,))
         response = self.client.get(url_cliente)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+    # ------------------------------------------------------------------------------------------- #
+
+class PerfilViewTest(APITestCase):
+    """
+    Suite que contiene las pruebas
+    con respecto a la vista que se encarga
+    de modificar la informacion del usuario
+    que esta loggeado
+    """
+    def setUp(self):
+        """
+        Inicializa la base de datos con informacion
+        para correr las pruebas
+        """
+        self.grupos = [
+            Group.objects.create(name=grupo) for grupo in GRUPOS
+        ]
+        self.admin = Usuario.objects.create(
+            first_name="Rafael",
+            last_name="Rodriguez",
+            email="rafael@gmail.com",
+            grupo=self.grupos[1],
+            username="rafaelrs",
+        )
+        self.admin.set_password('jaja123')
+        self.admin.save()
+        self.vendedor = Usuario.objects.create(
+            first_name="David",
+            last_name="Rodriguez",
+            email="david@gmail.com",
+            grupo=self.grupos[2],
+            username="dwest06",
+        )
+        self.vendedor.set_password('jaja123')
+        self.vendedor.save()
+        self.login = reverse_lazy("usuarios:login")
+
+    def test_existencia_de_la_vista(self):
+        """
+        Prueba que la vista exista
+        """
+        views.PerfilView.as_view()
+
+    def test_existencia_de_un_url_para_la_vista(self):
+        """
+        Metodo que prueba que existe un url
+        que conecta a la vista
+        """
+        self.assertEqual("/perfil/1",
+                         reverse_lazy("usuarios:perfil", args=(1,)), msg="Los urls no son iguales")
+
+    # ----GRUPO DE PRUEBAS DE QUIENES PUEDEN VER LA VISTA---------------------------------------- #
+    def test_usuario_no_autenticado_entra_a_la_vista(self):
+        """
+        Metodo que prueba que un usuario no
+        autenticado no puede entrar a la vista
+        de perfil
+        """
+        url = reverse_lazy("usuarios:perfil", args=(1,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_usuario_entra_a_perfil_de_otro_usuario(self):
+        """
+        Metodo que prueba que un usuario no puede
+        entrar al perfil de otro usuario
+        """
+        self.client.post(self.login, data={"username": "rafaelrs", "password": "jaja123"})
+        otro_usuario = Usuario.objects.get(username="dwest06")
+        url_perfil = reverse_lazy("usuarios:perfil", args=(otro_usuario.pk,))
+        response = self.client.get(url_perfil)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_usuario_entra_en_su_perfil(self):
+        """
+        Metodo que prueba que un usuario si puede
+        entrar a la vista de su perfil
+        """
+        self.client.post(self.login, data={"username": "rafaelrs", "password": "jaja123"})
+        usuario_loggeado = Usuario.objects.get(username="rafaelrs")
+        url_perfil = reverse_lazy("usuarios:perfil", args=(usuario_loggeado.pk,))
+        response = self.client.get(url_perfil)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+
+    def test_usuario_modifica_su_perfil(self):
+        """
+        Metodo que prueba que un usuario si
+        puede modificar su perfil
+        """
+        self.client.post(self.login, data={"username": "rafaelrs", "password": "jaja123"})
+        usuario_loggeado = Usuario.objects.get(username="rafaelrs")
+        url_perfil = reverse_lazy("usuarios:perfil", args=(usuario_loggeado.pk,))
+        data = {
+            "first_name": "Rafael",
+            "last_name": "Rodriguez",
+            "email": "hola@gmail.com",
+            "grupo": self.grupos[1].pk,
+            "username": "rafaelrs",
+            "password": "jaja123"
+        }
+        response = self.client.put(url_perfil, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+        usuario_loggeado = Usuario.objects.get(username="rafaelrs")
+        email_cambiado = usuario_loggeado.email
+        self.assertEqual("hola@gmail.com", email_cambiado, msg="No se actualizo el email")
