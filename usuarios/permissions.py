@@ -119,3 +119,17 @@ class VendedorOnly(permissions.BasePermission):
         """
         grupo = obj.grupo
         return str(grupo) == "Cliente"
+
+class OwnerOnly(permissions.BasePermission):
+    """
+    Clase que implementa el siguiente permiso:
+    Cada usuario puede acceder solo a su perfil
+    """
+    def has_object_permission(self, request, view, obj):
+        """
+        Metodo que implementa que el usuario
+        solo puede ver su perfil
+        """
+        usuario_loggeado = request.user
+        perfil_usuario = obj
+        return usuario_loggeado == perfil_usuario
