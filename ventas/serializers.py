@@ -21,4 +21,4 @@ class VentasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ventas
-        fields = "__al__"
+        fields = "__all__"
