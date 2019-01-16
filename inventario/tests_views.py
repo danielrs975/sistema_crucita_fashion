@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from inventario.models import Producto, Categoria
 from inventario.serializers import ProductoSerializer
+from usuarios.models import Usuario, Group
 
 class ProductoCrearViewTests(APITestCase):
     '''
@@ -14,6 +15,8 @@ class ProductoCrearViewTests(APITestCase):
     relacionada con la vista que se encarga
     de crear un producto
     '''
+    fixtures = ['groups.json', 'usuarios.json']
+
     def setUp(self):
         '''
         Inicializa las variables necesarias para
@@ -22,11 +25,15 @@ class ProductoCrearViewTests(APITestCase):
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
             Categoria.objects.create(nombre=categoria)
 
+
     def test_crear_producto(self):
         '''
         Prueba que se crea un producto nuevo
         con exito
         '''
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy('inventario:crear')
         data = {
             'codigo': "1",
@@ -45,6 +52,9 @@ class ProductoCrearViewTests(APITestCase):
         Prueba que no se crea un producto
         si los datos presentan un error
         '''
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy('inventario:crear')
         data = {
             'codigo': "1",
@@ -55,6 +65,60 @@ class ProductoCrearViewTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
+    
+    def test_verifica_que_el_usuario_esta_autenticado(self):
+        """
+        Prueba que si el usuario esta autenticado lo
+        dejara ver la vista
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED, msg=response.data)
+    
+    def test_usuario_no_autenticado_entra_a_la_vista(self):
+        """
+        Prueba que un usuario no autenticado no
+        puede entrar a la vista
+        """
+        url = reverse_lazy('inventario:crear')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+    
+    def test_administrador_entra_a_la_vista(self):
+        """
+        Prueba que si un administrador trata de entrar
+        a la vista se le permite
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED, msg=response.data)
+    
+    def test_vendedor_entra_a_la_vista(self):
+        """
+        Prueba que si un vendedor trata de entrar a la
+        vista se le permite
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "dwest06", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED, msg=response.data)
+    
+    def test_cliente_entra_a_la_vista(self):
+        """
+        Prueba que si un cliente trata de entrar a la vista
+        se le niega la entrada
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "rafaelrs", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
 
 class ProductoDetallesViewTest(APITestCase):
     '''
