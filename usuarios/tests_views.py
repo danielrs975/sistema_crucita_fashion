@@ -674,7 +674,7 @@ class PerfilViewTest(APITestCase):
         self.vendedor.save()
         self.login = reverse_lazy("usuarios:login")
 
-    def test_existencia_de_la_vista(self):
+    def test_existencia_de_la_vista(self): # pylint: disable=no-self-use
         """
         Prueba que la vista exista
         """
