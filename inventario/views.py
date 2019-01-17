@@ -21,7 +21,7 @@ class ProductoCrearView(generics.CreateAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
         IsStaff,
-    ) 
+    )
 
 class ProductoDetallesView(generics.RetrieveUpdateDestroyAPIView): # pylint: disable=too-many-ancestors
     '''
@@ -44,3 +44,7 @@ class ProductoBuscarView(generics.ListAPIView):
     serializer_class = ProductoSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('codigo', 'cantidad', 'costo', 'categoria')
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsStaff,
+    )
