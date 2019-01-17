@@ -208,6 +208,19 @@ class RegistroSerializerTest(TestCase):
         usuario_creado = Usuario.objects.get(username="rafaelrs")
         self.assertEqual(usuario_creado.grupo, Group.objects.get(name="Cliente"))
 
+    def test_password_y_repeat_password_son_iguales(self):
+        """
+        Prueba que el campo password y repeat password sean
+        iguales
+        """
+        data = self.usuario_data
+        registro_serializer = RegistroSerializer(data=data)
+        registro_serializer.is_valid()
+        registro_serializer.save()
+        usuario_creado = Usuario.objects.get(username="rafaelrs")
+        self.assertEqual(usuario_creado.password, usuario_creado.repeat_password,
+                         msg="Las claves no son iguales")
+
 class DetallesSerializerTest(TestCase):
     """
     Clase que contiene las pruebas del
