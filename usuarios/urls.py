@@ -18,6 +18,7 @@ urlpatterns = [
      path('usuarios/vendedor/detalles/<int:pk>', views.VendedorUsuarioView.as_view(),
           name="vendedor_detalles"),
      path('perfil/<int:pk>', views.PerfilView.as_view(), name="perfil"),
+     path('usuarios/buscar/', views.UsuarioBuscarView.as_view(), name="buscar"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
