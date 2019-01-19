@@ -8,8 +8,12 @@ from inventario.models import Producto
 # Create your models here.
 
 class Ventas(models.Model):
-	producto = models.ManyToManyField(Producto)
-	codigo = models.CharField(unique=True, max_length=500)
-	costo_total = models.FloatField()
-	fecha = models.DateField()
-	hora = models.DateTimeField()
+    '''
+    Tabla de Ventas, guarda los datos necesarios
+    al momento de una venta
+    '''
+    producto = models.ManyToManyField(Producto)
+    codigo = models.CharField(unique=True, max_length=500)
+    costo_total = models.FloatField()
+    fecha = models.DateField()
+    hora = models.DateTimeField()
