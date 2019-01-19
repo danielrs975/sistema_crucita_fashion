@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from rest_framework.test import APITestCase
 from rest_framework import status
 from usuarios.models import Usuario, Group, GRUPOS
-from usuarios.serializers import RegistroSerializer
+from usuarios.serializers import RegistroSerializer, DetallesSerializer
 from usuarios import views
 
 class LoginViewTest(APITestCase):
@@ -742,3 +742,152 @@ class PerfilViewTest(APITestCase):
         usuario_loggeado = Usuario.objects.get(username="rafaelrs")
         email_cambiado = usuario_loggeado.email
         self.assertEqual("hola@gmail.com", email_cambiado, msg="No se actualizo el email")
+
+class UsuarioBuscarView(APITestCase):
+    """
+    Suite de pruebas de la vista que permite
+    buscar usuarios dentro del sistema
+    """
+    fixtures = ['usuarios.json', 'groups.json']
+
+    def setUp(self):
+        """
+        Llena la base de datos con informacion inicial
+        para correr las pruebas
+        """
+        self.login = reverse_lazy('usuarios:login')
+        self.url = reverse_lazy('usuarios:buscar')
+        self.data = {
+            "username": "crucita",
+            "password": "crucita64"
+        }
+
+    def test_existencia_de_la_vista(self): # pylint: disable=no-self-use
+        """
+        Prueba que la vista existe
+        """
+        views.UsuarioBuscarView.as_view()
+
+    def test_existencia_de_url_para_la_vista(self):
+        """
+        Prueba que existe un url para la vista
+        """
+        self.assertEqual('/usuarios/buscar/', reverse_lazy('usuarios:buscar'))
+
+    def test_usuario_no_autenticado_no_puede_acceder_a_la_vista(self):
+        """
+        Prueba que un usuario no autenticado no puede
+        acceder a la vista
+        """
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_usuario_autenticado_como_staff_puede_acceder(self):
+        """
+        Prueba que un usuario autenticado como
+        personal de la empresa puede buscar usuarios
+        """
+        usuarios_staff = {
+            "danielrs": "danielrs19972705",
+            "crucita": "crucita64",
+            "dwest06": "jaja123"
+        }
+        for usuario in usuarios_staff:
+            data = {
+                "username": usuario,
+                "password": usuarios_staff[usuario]
+            }
+            self.client.post(self.login, data=data)
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+
+    def test_usuario_autenticado_como_cliente_no_puede_acceder_a_la_vista(self):
+        """
+        Prueba que un usuario autenticado como cliente no
+        puede acceder a la vista
+        """
+        self.client.post(self.login, data={"username": "rafaelrs", "password": "jaja123"})
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_busqueda_con_username_existente(self):
+        """
+        Prueba que una busqueda con un username existente
+        regresa el resultado
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?username=rafaelrs"
+        response = self.client.get(self.url)
+        query = Usuario.objects.filter(username="rafaelrs")
+        resultado_esperado = [
+            DetallesSerializer(usuario).data for usuario in query
+        ]
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Los resultados no son iguales")
+
+    def test_busqueda_con_username_inexistente(self):
+        """
+        Prueba que una busqueda con un username inexistente
+        retorna nada
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?username=oiasnifnasoin"
+        response = self.client.get(self.url)
+        resultado_esperado = []
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Devolvio un resultado a pesar que el usuario no existe")
+
+    def test_busqueda_con_email_existente(self):
+        """
+        Prueba que una busqueda con un email existente
+        devuelve un usuario
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?email=danielrs9705@gmail.com"
+        response = self.client.get(self.url)
+        usuario = Usuario.objects.get(email="danielrs9705@gmail.com")
+        resultado_esperado = [DetallesSerializer(usuario).data]
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Los resultados no coincide")
+
+    def test_busqueda_con_email_inexistente(self):
+        """
+        Prueba que una busqueda con email inexistente
+        devuelve una lista vacia
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?email=danielrs1021@gmail.com"
+        response = self.client.get(self.url)
+        resultado_esperado = []
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Devolvio un resultado a pesar que el usuario no existe")
+
+    def test_busqueda_por_apellido(self):
+        """
+        Prueba que la busqueda por apellido lo hace
+        bien
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?last_name=Rodriguez"
+        response = self.client.get(self.url)
+        query = Usuario.objects.filter(last_name="Rodriguez")
+        resultado_esperado = [
+            DetallesSerializer(usuario).data for usuario in query
+        ]
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Los resultados no son iguales")
+
+    def test_busqueda_por_grupo(self):
+        """
+        Prueba que la busqueda por grupo lo
+        hace bien
+        """
+        self.client.post(self.login, data=self.data)
+        self.url = self.url + "?grupo=1"
+        response = self.client.get(self.url)
+        query = Usuario.objects.filter(grupo=1)
+        resultado_esperado = [
+            DetallesSerializer(usuario).data for usuario in query
+        ]
+        self.assertEqual(response.data, resultado_esperado,
+                         msg="Los resultados no son iguales")

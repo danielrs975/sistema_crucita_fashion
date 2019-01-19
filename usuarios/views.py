@@ -4,6 +4,7 @@ esta aplicacion
 '''
 from django.shortcuts import render # pylint: disable=unused-import
 from django.contrib.auth import authenticate, login
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, views, status
 from rest_framework.response import Response
 from usuarios.models import Usuario
@@ -16,6 +17,7 @@ from usuarios.permissions import (
     VendedorOnly,
     OwnerOnly,
 )
+from crucita_fashion.permissions import IsStaff
 
 # Create your views here.
 
@@ -120,6 +122,20 @@ class VendedorUsuarioView(generics.RetrieveAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
         VendedorOnly,
+    )
+
+class UsuarioBuscarView(generics.ListAPIView):
+    """
+    Vista que implementa la busqueda de algun
+    usuario registrado en el sistema
+    """
+    queryset = Usuario.objects.all()
+    serializer_class = DetallesSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('username', 'email', 'first_name', 'last_name', 'grupo',)
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsStaff,
     )
 
 class PerfilView(generics.RetrieveUpdateAPIView):
