@@ -3,7 +3,6 @@ Script que contiene los permisos
 que estan relacionado con los usuarios
 """
 from rest_framework import permissions
-from crucita_fashion.permissions import IsStaff
 
 class EsSuperUsuarioOAdministrador(permissions.BasePermission):
     """
