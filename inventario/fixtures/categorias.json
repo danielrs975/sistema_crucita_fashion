@@ -1,0 +1,30 @@
+[
+{
+    "model": "inventario.categoria",
+    "pk": 1,
+    "fields": {
+        "nombre": "Ropa"
+    }
+},
+{
+    "model": "inventario.categoria",
+    "pk": 2,
+    "fields": {
+        "nombre": "Zapato"
+    }
+},
+{
+    "model": "inventario.categoria",
+    "pk": 3,
+    "fields": {
+        "nombre": "Accesorio"
+    }
+},
+{
+    "model": "inventario.categoria",
+    "pk": 4,
+    "fields": {
+        "nombre": "Pantalones"
+    }
+}
+]

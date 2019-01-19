@@ -14,6 +14,8 @@ class ProductoCrearViewTests(APITestCase):
     relacionada con la vista que se encarga
     de crear un producto
     '''
+    fixtures = ['groups.json', 'usuarios.json']
+
     def setUp(self):
         '''
         Inicializa las variables necesarias para
@@ -22,11 +24,22 @@ class ProductoCrearViewTests(APITestCase):
         for categoria in ["Ropa", "Zapato", "Accesorio"]:
             Categoria.objects.create(nombre=categoria)
 
+        self.data = {
+            'codigo': "1",
+            'cantidad': 1,
+            'costo': 1,
+            'categoria': (Categoria.objects.get(nombre="Ropa")).pk,
+            'talla': "M",
+        }
+
     def test_crear_producto(self):
         '''
         Prueba que se crea un producto nuevo
         con exito
         '''
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy('inventario:crear')
         data = {
             'codigo': "1",
@@ -45,6 +58,9 @@ class ProductoCrearViewTests(APITestCase):
         Prueba que no se crea un producto
         si los datos presentan un error
         '''
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy('inventario:crear')
         data = {
             'codigo': "1",
@@ -56,11 +72,69 @@ class ProductoCrearViewTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
+    def test_verifica_que_el_usuario_esta_autenticado(self):
+        """
+        Prueba que si el usuario esta autenticado lo
+        dejara ver la vista
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED,
+                         msg=response.data)
+
+    def test_usuario_no_autenticado_entra_a_la_vista(self):
+        """
+        Prueba que un usuario no autenticado no
+        puede entrar a la vista
+        """
+        url = reverse_lazy('inventario:crear')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_administrador_entra_a_la_vista(self):
+        """
+        Prueba que si un administrador trata de entrar
+        a la vista se le permite
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED,
+                         msg=response.data)
+
+    def test_vendedor_entra_a_la_vista(self):
+        """
+        Prueba que si un vendedor trata de entrar a la
+        vista se le permite
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "dwest06", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED,
+                         msg=response.data)
+
+    def test_cliente_entra_a_la_vista(self):
+        """
+        Prueba que si un cliente trata de entrar a la vista
+        se le niega la entrada
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:crear')
+        self.client.post(login, data={"username": "rafaelrs", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+
 class ProductoDetallesViewTest(APITestCase):
     '''
     Clase que prueba la vista que muestra
     los detalles de un producto
     '''
+    fixtures = ['groups.json', 'usuarios.json']
     def setUp(self):
         '''
         Inicializa la base de datos con algunos
@@ -83,11 +157,50 @@ class ProductoDetallesViewTest(APITestCase):
             categoria=Categoria.objects.get(nombre="Accesorio")
         )
 
+    def test_no_esta_autenticado(self):
+        """
+        Prueba que al usuario no autenticado no se le
+        permite acceso a la vista
+        """
+        url = reverse_lazy('inventario:editar', args=((Producto.objects.get(codigo="2")).pk,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_esta_autenticado_como_staff(self):
+        """
+        Prueba que el usuario autenticado y es del staff
+        se le permite entrar a la vista
+        """
+        usuario_staff = {
+            "danielrs": "danielrs19972705", # SuperUsuario
+            "crucita": "crucita64", # Administrador
+            "dwest06": "jaja123" # Vendedor
+        }
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy('inventario:editar', args=((Producto.objects.get(codigo="2")).pk,))
+        for usuario in usuario_staff:
+            self.client.post(login, data={"username": usuario, "password": usuario_staff[usuario]})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+
+    def test_esta_autenticado_como_cliente(self):
+        """
+        Prueba que un usuario autenticado como
+        cliente no puede acceder a esta vista
+        """
+        login = reverse_lazy("usuarios:login")
+        url = reverse_lazy('inventario:editar', args=((Producto.objects.get(codigo="2")).pk,))
+        self.client.post(login, data={"username": "rafaelrs", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
     def test_mostrar_detalles_de_un_producto(self):
         '''
         Prueba que muestra los detalles de un producto
         con exito
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
         url = reverse_lazy('inventario:editar', args=((Producto.objects.get(codigo="2")).pk,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
@@ -97,6 +210,8 @@ class ProductoDetallesViewTest(APITestCase):
         Prueba que si un producto no existe
         arroja un error 404 Not Found
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
         url = reverse_lazy('inventario:editar', args=(5,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, msg=response.data)
@@ -105,6 +220,8 @@ class ProductoDetallesViewTest(APITestCase):
         '''
         Prueba que actualiza bien los detalles de un producto
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
         producto_editar = Producto.objects.get(codigo="2")
         url = reverse_lazy('inventario:editar', args=(producto_editar.pk,))
         data = {
@@ -125,6 +242,8 @@ class ProductoDetallesViewTest(APITestCase):
         Prueba que elimina un producto con
         exito
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
         producto_eliminar = Producto.objects.get(codigo="2")
         url = reverse_lazy('inventario:editar', args=(producto_eliminar.pk,))
         response = self.client.delete(url)
@@ -138,6 +257,8 @@ class ProductoDetallesViewTest(APITestCase):
         Prueba que muestra un error si el
         producto a eliminar no existe
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "crucita", "password": "crucita64"})
         url = reverse_lazy('inventario:editar', args=(8,))
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, msg=response.data)
@@ -147,6 +268,8 @@ class ProductoBuscarViewTest(APITestCase):
     Clase que contiene las pruebas relacionadas
     a la vista encargada de la busqueda
     '''
+    fixtures = ['groups.json', 'usuarios.json']
+
     def setUp(self):
         '''
         Pobla la base de datos con informacion
@@ -170,11 +293,50 @@ class ProductoBuscarViewTest(APITestCase):
         )
         self.mensaje_query = "La query hecha por .filter y por el request no son iguales"
 
+    def test_usuario_no_autenticado_no_puede_acceder_a_la_vista(self):
+        """
+        Prueba que un usuario no autenticado no puede
+        buscar
+        """
+        url = reverse_lazy("inventario:buscar")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
+    def test_usuario_staff_accede_a_la_vista(self):
+        """
+        Prueba que si un usuario pertenece al staff trata
+        de acceder a la vista se le permite
+        """
+        usuario_staff = {
+            "danielrs": "danielrs19972705", # SuperUsuario
+            "crucita": "crucita64", # Administrador
+            "dwest06": "jaja123" # Vendedor
+        }
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy("inventario:buscar")
+        for usuario in usuario_staff:
+            self.client.post(login, data={"username": usuario, "password": usuario_staff[usuario]})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+
+    def test_cliente_no_puede_acceder_a_la_vista(self):
+        """
+        Prueba que el cliente no puede acceder a la
+        vista de buscar
+        """
+        login = reverse_lazy('usuarios:login')
+        url = reverse_lazy("inventario:buscar")
+        self.client.post(login, data={"username": "rafaelrs", "password": "jaja123"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, msg=response.data)
+
     def test_busqueda_con_codigo_valido(self):
         '''
         Prueba que contiene un busqueda por codigo
         en la base de datos
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy("inventario:buscar")
         url = url + "?codigo=2"
         response = self.client.get(url)
@@ -190,6 +352,8 @@ class ProductoBuscarViewTest(APITestCase):
         valida retorna una lista de los productos
         en esa categoria
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         categoria = Categoria.objects.get(nombre="Ropa")
         url = reverse_lazy("inventario:buscar")
         url = url + "?categoria=" + str(categoria.pk)
@@ -205,6 +369,8 @@ class ProductoBuscarViewTest(APITestCase):
         '''
         Prueba la busqueda con varios campos
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         categoria = Categoria.objects.get(nombre="Ropa")
         url = reverse_lazy("inventario:buscar")
         url = url + "?categoria=" + str(categoria.pk) + "&talla=M"
@@ -221,6 +387,8 @@ class ProductoBuscarViewTest(APITestCase):
         Prueba realizar una busqueda con uno
         de los atributos invalido
         '''
+        login = reverse_lazy('usuarios:login')
+        self.client.post(login, data={"username": "danielrs", "password": "danielrs19972705"})
         url = reverse_lazy("inventario:buscar")
         url = url + "?costo=-1"
         response = self.client.get(url)
