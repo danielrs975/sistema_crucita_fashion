@@ -29,7 +29,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '0.0.0.0',
     'localhost',
-    'crucitafashion.herokuapp.com'
+    'crucitafashion-api.herokuapp.com'
 ]
 
 
