@@ -93,9 +93,6 @@ DATABASES = {
     )
 }
 
-DB_FROM_ENV = dj_database_url.config()
-DATABASES['default'].update(DB_FROM_ENV)
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
