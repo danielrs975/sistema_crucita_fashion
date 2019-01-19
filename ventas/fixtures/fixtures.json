@@ -1,0 +1,45 @@
+[
+	{
+		"pk" : 1,
+		"model": "inventario.Categoria",
+		"fields": {
+			"nombre" : "Ropa"
+		}
+	},
+	{
+		"pk" : 2,
+		"model": "inventario.Categoria",
+		"fields": {
+			"nombre" : "Zapato"
+		}
+	},
+	{
+		"pk" : 3,
+		"model": "inventario.Categoria",
+		"fields": {
+			"nombre" : "Accesorio"
+		}
+	},
+	{
+		"pk" : 1,
+		"model": "inventario.Producto",
+		"fields": {
+			"codigo" : "12hy4",
+    		"cantidad" : 1,
+    		"costo" : 1,
+    		"categoria" : 1,
+    		"talla" : "M"
+		}
+	},
+	{
+		"pk" : 2,
+		"model": "inventario.Producto",
+		"fields": {
+			"codigo" : "163gh4",
+    		"cantidad" : 1,
+    		"costo" : 1,
+    		"categoria" : 1,
+    		"talla" : "M"
+		}
+	}
+]
