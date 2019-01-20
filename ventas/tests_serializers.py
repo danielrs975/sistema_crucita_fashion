@@ -8,7 +8,6 @@ from django.utils import timezone
 from inventario.models import Producto, Categoria # pylint: disable=unused-import
 from .serializers import VentasSerializer
 from .models import Ventas
-from pprint import pprint
 
 class VentaSerializerTest(TestCase):
     '''
@@ -21,18 +20,23 @@ class VentaSerializerTest(TestCase):
         Metodo para iniciar los objetos prueba
         de la clase de pruebas
         '''
-        self.fecha = date.today()
-        self.hora = timezone.now()
-        producto = Producto.objects.get(pk=1)
+        self.fecha = str(date.today())
+        self.hora = str(timezone.now())
+
+        self.producto = Producto.objects.get(pk=1)
+
         self.venta = Ventas.objects.create(
             codigo='1a',
             costo_total=1,
             fecha=self.fecha,
             hora=self.hora,
         )
-        self.venta.producto.add(producto)
+
+        self.venta.producto.add(self.producto)
+
         self.venta_json = {
-            'codigo' : '1a',
+            'producto' : [self.producto.pk],
+            'codigo' : '1b',
             'costo_total': 1,
             'fecha': self.fecha,
             'hora' : self.hora,
@@ -43,8 +47,15 @@ class VentaSerializerTest(TestCase):
         Prueba que devuelve true si la data suministrada la
         procesa bien
         '''
+        venta1 = {
+            'producto' : [self.producto.pk],
+            'codigo' : '1a',
+            'costo_total': 1,
+            'fecha': self.fecha,
+            'hora' : self.hora,
+        }
         venta_serializer = VentasSerializer(self.venta)
-        self.assertEqual(venta_serializer.data, self.venta_json, msg="Ventas Distintas")
+        self.assertEqual(venta_serializer.data, venta1, msg="Ventas Distintas")
 
     def test_codigo_formato_incorrecto(self):
         '''
@@ -55,8 +66,8 @@ class VentaSerializerTest(TestCase):
             'producto' : Producto.objects.get(pk=1),
             'codigo' : 1,
             'costo_total': 1,
-            'fecha': date.today(),
-            'hora' : timezone.now(),
+            'fecha': self.fecha,
+            'hora' : self.hora,
         }
         venta_serializer = VentasSerializer(data=venta1)
         self.assertFalse(venta_serializer.is_valid(), msg=venta_serializer.errors)
@@ -66,7 +77,7 @@ class VentaSerializerTest(TestCase):
         Prueba que is_valid() devuelve true si el formato
         de fecha es correcto
         '''
-        venta_serializer = VentasSerializer(self.venta)
+        venta_serializer = VentasSerializer(data=self.venta_json)
         self.assertTrue(venta_serializer.is_valid(), msg=venta_serializer.errors)
 
     def test_fecha_formato_incorrecto(self):
@@ -89,7 +100,7 @@ class VentaSerializerTest(TestCase):
         Prueba que is_valid() devuelve true si el formato
         de hora es correcto
         '''
-        venta_serializer = VentasSerializer(data=self.venta)
+        venta_serializer = VentasSerializer(data=self.venta_json)
         self.assertTrue(venta_serializer.is_valid(), msg=venta_serializer.errors)
 
     def test_hora_formato_incorrecto(self):

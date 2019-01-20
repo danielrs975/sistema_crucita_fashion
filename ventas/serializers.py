@@ -11,4 +11,3 @@ class VentasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ventas
         fields = ('producto', 'codigo', 'costo_total', 'fecha', 'hora')
-
