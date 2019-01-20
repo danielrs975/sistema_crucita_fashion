@@ -29,7 +29,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '0.0.0.0',
     'localhost',
-    'crucitafashion.herokuapp.com'
+    'crucitafashion-api.herokuapp.com'
 ]
 
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'inventario',
     'ventas',
+    'usuarios',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,6 @@ DATABASES = {
         default='postgres://crucita_fashion:crucitafashion@localhost:5432/crucita_fashion'
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -155,3 +155,5 @@ REST_FRAMEWORK = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'usuarios.Usuario'

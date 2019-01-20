@@ -1,0 +1,82 @@
+[
+{
+    "model": "usuarios.usuario",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$bKSEx4rzmZEl$gD87j9Fav4qF9tNaHQ5ML7JoriaRpvLr+F0W+wy7jrQ=",
+        "last_login": "2019-01-16T02:29:58.547Z",
+        "is_superuser": true,
+        "username": "danielrs",
+        "first_name": "Daniel",
+        "last_name": "Rodriguez",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-16T00:51:19.998Z",
+        "grupo": 1,
+        "email": "danielrs9705@gmail.com",
+        "repeat_password": "danielrs19972705",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "usuarios.usuario",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$hX18Pnz3k5qK$xltdYRT3ZkwtNqfZu4H8kww8zsUM2BDFYW951LjdU1Q=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "crucita",
+        "first_name": "Cruz",
+        "last_name": "S\u00e1nchez",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-16T01:03:35.785Z",
+        "grupo": 2,
+        "email": "crucitafashion@hotmail.com",
+        "repeat_password": "crucita64",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "usuarios.usuario",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$5Oa5QurLezBi$e+AOibSGGkHqywDJSMR7y5Dze7mWUs1M9nkoHJSzpEY=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "dwest06",
+        "first_name": "David",
+        "last_name": "Rodriguez",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-16T02:30:48.076Z",
+        "grupo": 3,
+        "email": "david00dark@gmail.com",
+        "repeat_password": "jaja123",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "usuarios.usuario",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$30MD4NvPUokQ$J1DPbo5BNi3Syx379JIIKc9vnlOORF7zdbbhkrrtC60=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "rafaelrs",
+        "first_name": "Rafael",
+        "last_name": "Rodriguez",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-01-16T02:31:28.584Z",
+        "grupo": 4,
+        "email": "rodriguezjr54@hotmail.com",
+        "repeat_password": "jaja123",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
